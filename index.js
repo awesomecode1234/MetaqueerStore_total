@@ -214,8 +214,8 @@ app.use(function(err, req, res, next)
 	res.status(500).send(result);	
 });
 
-const port = process.env.PORT || 5000;
-const host = process.env.HOST || '0.0.0.0';
+const port = process.env.SERVICE_PORT || 5000;
+const host = process.env.SERVICE_ADDRESS || '0.0.0.0';
 const timeout = parseInt(process.env.TIMEOUT);
 
 app.listen(port, host, () => 
