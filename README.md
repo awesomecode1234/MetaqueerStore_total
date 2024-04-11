@@ -14,6 +14,9 @@ https://github.com/Rutilusmeta/nft-market-frontend
 Frontend Docker:
 https://github.com/ground-creative/nft-market-frontend-docker
 
+Ganache Docker Test Node:
+https://github.com/Rutilusmeta/docker-ganache-node
+
 ## Installation
 
 1) Clone the repository
@@ -25,7 +28,18 @@ git clone https://github.com/ground-creative/nft-market-backend
 
 ## Usage
 
+Intall node modules:
+```
+npm install
+```
+
 Run node server:
 ```
 node index.js
+```
+
+run with nodemo:
+```
+npm install -g nodemon
+nodemon index.js
 ```
