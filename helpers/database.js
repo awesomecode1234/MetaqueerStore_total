@@ -1,10 +1,12 @@
 const mysql = require('mysql');
 
-class Database {
-    constructor(config) {
+class Database 
+{
+    constructor(config) 
+    {
         this.config = config;
         this.connection = null;
-        this.createConnection();
+        //this.createConnection();
         this.createTables();
     }
 
@@ -39,8 +41,13 @@ class Database {
         });
     }
 
-    async createTables() {
-        try {
+    async createTables() 
+    {
+        let connection;
+        try 
+        {
+            connection = mysql.createConnection(this.config);
+            //await connection.connect();
             // Create tables if they do not exist
             await this.query(`CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,17 +61,49 @@ class Database {
                 website VARCHAR(255) DEFAULT NULL,
                 status TINYINT(1) DEFAULT 0
             )`);
-
             console.log('Tables created or already exist.');
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.error('Error creating tables:', err);
+        }
+        finally
+        {
+            if (connection)
+            {
+                await connection.end();
+                console.log('Connection to MySQL database closed.');
+            }
         }
     }
 
-    query(sql, values) {
-        return new Promise((resolve, reject) => {
-            this.connection.query(sql, values, (err, result) => {
-                if (err) {
+    async query(sql, values) 
+    {
+        let connection;
+        try 
+        {
+            connection = mysql.createConnection(this.config);
+            //await connection.connect();
+            const result = await this.executeQuery(connection, sql, values);
+            connection.end();
+            return result;
+        } 
+        catch (err) 
+        {
+            console.error('Error executing query:', err);
+            if (connection) connection.end();
+            throw err;
+        }
+    }
+
+    async executeQuery(connection, sql, values) 
+    {
+        return new Promise((resolve, reject) => 
+        {
+            connection.query(sql, values, (err, result) => 
+            {
+                if (err) 
+                {
                     console.error('Error executing query:', err);
                     reject(err);
                     return;
@@ -74,11 +113,15 @@ class Database {
         });
     }
 
-    close() {
-        try {
+    close() 
+    {
+        try 
+        {
             this.connection.end();
             console.log('Connection to MySQL database closed.');
-        } catch (err) {
+        } 
+        catch (err) 
+        {
             console.error('Error closing MySQL database connection:', err);
         }
     }
