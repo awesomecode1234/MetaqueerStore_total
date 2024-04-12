@@ -2,18 +2,41 @@ const mysql = require('mysql');
 
 class Database {
     constructor(config) {
-        this.connection = mysql.createConnection(config);
-        this.connect();
+        this.config = config;
+        this.connection = null;
+        this.createConnection();
         this.createTables();
     }
 
-    connect() {
-        try {
-            this.connection.connect();
-            console.log('Connected to MySQL database!');
-        } catch (err) {
-            console.error('Error connecting to MySQL database:', err);
-        }
+    createConnection() 
+    {
+        this.connection = mysql.createConnection(this.config);
+        this.connection.connect(err => 
+        {
+            if (err) 
+            {
+                console.error('Error connecting to MySQL database:', err);
+                setTimeout(this.createConnection.bind(this), 2000); // Retry connection after 2 seconds
+            } 
+            else 
+            {
+                console.log('Connected to MySQL database!');
+            }
+        });
+
+        this.connection.on('error', err => 
+        {
+            if (err.code === 'PROTOCOL_CONNECTION_LOST') 
+            {
+                console.error('MySQL connection lost. Attempting to reconnect...');
+                this.createConnection();
+            } 
+            else 
+            {
+                console.error('Error with mysql connection:', err);
+                throw err;
+            }
+        });
     }
 
     async createTables() {
