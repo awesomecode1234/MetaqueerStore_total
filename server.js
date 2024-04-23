@@ -11,6 +11,10 @@ const responseCodes = require('./config/response_codes.json');
 
 Database = require('./helpers/database');
 
+app.set('trust proxy', 1);
+//app.get('/ip', (request, response) => response.send(request.ip));
+//app.get('/x-forwarded-for', (request, response) => response.send(request.headers['x-forwarded-for']));
+
 // Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => 
 {
@@ -90,11 +94,13 @@ app.use((req, res, next) =>
 });
 
 // Apply the rate limiter to all requests
-app.use(rateLimit({
+app.use(rateLimit(
+{
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Max 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later',
-  handler: (req, res, next) => {
+  handler: (req, res, next) => 
+  {
     let result = req.resHandler.payload(false, 429, res.response_codes['429'], {});
     req.resHandler.output(result, 429, 'application/json');
   }
@@ -103,7 +109,8 @@ app.use(rateLimit({
 ** method: GET
 ** uri: /
 */
-app.get('/', (req, res) => {
+app.get('/', (req, res) => 
+{
   let result = req.resHandler.payload(true, 200, "nft market api", {});
   req.resHandler.output(result, 200, 'application/json');
 });
@@ -193,11 +200,76 @@ app.put('/user', reqHandler.checkAuthorization,
     return req.resHandler.output(result, 500, 'application/json');
   }
 });
+/*
+** method: POST
+** uri: /listing 
+** params: nft_id
+*/
+app.post('/listing', reqHandler.checkAuthorization, 
+[
+  body('nft_id').notEmpty().withMessage('Nft id is required and cannot be empty'),
+], handleValidationErrors, async (req, res) => 
+{
+  try 
+  {
+    await db.query('DELETE from listings WHERE nft_id = ?', [req.body.nft_id]);
+    const userData = await db.query('SELECT * from users WHERE email = ?', [req.user.email]);
+    await db.query('INSERT INTO listings (nft_id, user_id, status) VALUES (?, ?, ?)', [req.body.nft_id, userData[0].id, 1]);
+    let result = req.resHandler.payload(true, 200, 'Listing inserted successfully', { });
+    return req.resHandler.output(result, 200, 'application/json');
+  } 
+  catch (error) 
+  {
+    req.logger.error('Error inserting listing:', error);
+    let result = req.resHandler.payload(true, 500, res.response_codes['500'], {});
+    return req.resHandler.output(result, 500, 'application/json');
+  }
+});
+/*
+** method: GET
+** uri: /listing
+** params: nft_id
+*/
+app.get('/listing', 
+[
+  body('nft_id').notEmpty().withMessage('Nft id is required and cannot be empty'),
+], handleValidationErrors, async (req, res) => 
+{
+  try 
+  {
+    const listing = await db.query('SELECT * FROM  listings WHERE nft_id = ? AND status = ?', [req.body.nft_id, 1]);
+    if (listing.length == 0)
+    {
+      let result = req.resHandler.payload(true, 700, res.response_codes['700'], {});
+      return req.resHandler.output(result, 500, 'application/json');
+    }
+    const userData = await db.query('SELECT * FROM users WHERE id = ? AND status = ?', [listing[0].user_id, 1]);
+    if (userData.length == 0)
+    {
+      let result = req.resHandler.payload(true, 600, res.response_codes['600'], {});
+      return req.resHandler.output(result, 500, 'application/json');
+    }
+    const data =
+    {
+      avatar: userData[0].avatar,
+      description: userData[0].description,
+      date_inserted: listing[0].date_inserted
+    }
+    let result = req.resHandler.payload(true, 200, 'Listing data retrieved successfully', data);
+    return req.resHandler.output(result, 200, 'application/json');
+  } 
+  catch (error) 
+  {
+    req.logger.error('Error inserting listing:', error);
+    let result = req.resHandler.payload(true, 500, res.response_codes['500'], {});
+    return req.resHandler.output(result, 500, 'application/json');
+  }
+});
 
 // *** The 404 Route, last route ***
-app.get('*', (req , res) => 
+app.all('*', (req , res) => 
 {
-	let msg = 'No service is associated with the url => ' + req.url;
+  let msg = 'No service is associated with the url => ' + req.url;
 	req.logger.error(msg);
 	let result = req.resHandler.notFound(msg, {});
 	res.header('Content-Type', 'application/json');

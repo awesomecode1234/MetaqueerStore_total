@@ -59,6 +59,14 @@ class Database
                 description LONGTEXT DEFAULT NULL,
                 phone VARCHAR(255) DEFAULT NULL,
                 website VARCHAR(255) DEFAULT NULL,
+                date_inserted DATETIME DEFAULT CURRENT_TIMESTAMP,
+                status TINYINT(1) DEFAULT 0
+            )`);
+            await this.query(`CREATE TABLE IF NOT EXISTS listings (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nft_id INT DEFAULT NULL,
+                user_id INT DEFAULT NULL,
+                date_inserted DATETIME DEFAULT CURRENT_TIMESTAMP,
                 status TINYINT(1) DEFAULT 0
             )`);
             console.log('Tables created or already exist.');

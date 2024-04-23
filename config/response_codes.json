@@ -7,5 +7,6 @@
     "403": "Forbidden",
     "429": "Too many requests from this IP, please try again later",
     "600": "User not found",
-    "601": "User is disabled"
+    "601": "User is disabled",
+    "700": "Listing not found or disabled"
 }
