@@ -27,7 +27,8 @@ const handleValidationErrors = (req, res, next) =>
   next();
 };
 
-const dbConfig = {
+const dbConfig = 
+{
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -43,21 +44,34 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
+app.use((req, res, next) => 
+{
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, UUID');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-  next();
+  if (req.method === 'OPTIONS')
+  {
+    res.sendStatus(200);
+  } 
+  else 
+  {
+    next();
+  }
 });
 
-// Redirect if no trailing slash, but skip for OPTIONS requests
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
+app.use((req, res, next) => 
+{
+  if (req.method === 'OPTIONS') 
+  {
     next(); // Skip the redirect for OPTIONS requests
-  } else if (req.path.substr(-1) !== '/' && req.path.length > 1) {
+  } 
+  else if (req.path.substr(-1) !== '/' && req.path.length > 1) 
+  {
     const query = req.url.slice(req.path.length);
     res.redirect(307, req.path + '/' + query);
-  } else {
+  } 
+  else 
+  {
     next();
   }
 });
@@ -273,6 +287,7 @@ app.all('*', (req , res) =>
 	req.logger.error(msg);
 	let result = req.resHandler.notFound(msg, {});
 	res.header('Content-Type', 'application/json');
+  console.log(msg);
 	res.status(404).send(result);	
 });
 
