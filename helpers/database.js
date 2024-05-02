@@ -66,6 +66,7 @@ class Database
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nft_id INT DEFAULT NULL,
                 user_id INT DEFAULT NULL,
+                address VARCHAR(255) DEFAULT NULL,
                 date_inserted DATETIME DEFAULT CURRENT_TIMESTAMP,
                 status TINYINT(1) DEFAULT 0
             )`);

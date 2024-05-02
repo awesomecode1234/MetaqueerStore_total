@@ -107,18 +107,21 @@ app.use((req, res, next) =>
 	next();
 });
 
-// Apply the rate limiter to all requests
-app.use(rateLimit(
+if (process.env.ENVIRONMENT === 'prod')
 {
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Max 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later',
-  handler: (req, res, next) => 
+  // Apply the rate limiter to all requests
+  app.use(rateLimit(
   {
-    let result = req.resHandler.payload(false, 429, res.response_codes['429'], {});
-    req.resHandler.output(result, 429, 'application/json');
-  }
-}));
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Max 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later',
+    handler: (req, res, next) => 
+    {
+      let result = req.resHandler.payload(false, 429, res.response_codes['429'], {});
+      req.resHandler.output(result, 429, 'application/json');
+    }
+  }));
+}
 /*
 ** method: GET
 ** uri: /
@@ -146,7 +149,7 @@ app.get('/user', reqHandler.checkAuthorization, async (req, res) =>
 {
   if (req.user.email === null)
   {
-    let result = req.resHandler.payload(true, 500, res.response_codes['500'], data);
+    let result = req.resHandler.payload(false, 500, res.response_codes['500'], data);
     req.resHandler.output(result, 500, 'application/json');
   }
   try 
@@ -154,10 +157,10 @@ app.get('/user', reqHandler.checkAuthorization, async (req, res) =>
     let data = await db.query('SELECT * from users WHERE email = ?', [req.user.email]);
     if (data.length == 0) // we should insert a new user
     {
-      let insertQuery = 'INSERT INTO users (firstName, lastName, email, avatar, status) VALUES (?, ?, ?, ?, ?)';
+      let insertQuery = 'INSERT INTO users (firstName, lastName, email, avatar, art_name, status) VALUES (?, ?, ?, ?, ?)';
       const randomNumber = Math.floor(Math.random() * 8) + 1;
       const avatarFilename = `${randomNumber}.jpg`;
-      let userData = [req.user.firstname, req.user.lastname, req.user.email, avatarFilename, 1];
+      let userData = [req.user.firstname, req.user.lastname, req.user.email, avatarFilename, 'Anonymous', 1];
       try 
       {
         await db.query(insertQuery, userData);
@@ -167,22 +170,23 @@ app.get('/user', reqHandler.checkAuthorization, async (req, res) =>
       catch (error) 
       {
         req.logger.error('Error inserting user:', error);
-        let result = req.resHandler.payload(true, 500, res.response_codes['500'], {});
+        let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
         return req.resHandler.output(result, 500, 'application/json');
       }
     }
     if (data[0].status == 0)
     {
-      let result = req.resHandler.payload(true, 601, res.response_codes['601'], {});
+      let result = req.resHandler.payload(false, 601, res.response_codes['601'], {});
       return req.resHandler.output(result, 601, 'application/json');
     }
     if (data.length > 0)
     {
-      const sanitizedData = data.map(({ id, ...rest }) => rest);
+      //const sanitizedData = data.map(({ id, ...rest }) => rest);
+      const sanitizedData = data.map(({ id, ...rest }) => ({ sid: id, ...rest }));
       let result = req.resHandler.payload(true, 200, "Success retrieving user data", sanitizedData);
       return req.resHandler.output(result, 200, 'application/json');
     }
-    let result = req.resHandler.payload(true, 600, res.response_codes['600'], {});
+    let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
     return req.resHandler.output(result, 200, 'application/json');
   } 
   catch (err) 
@@ -219,10 +223,50 @@ app.put('/user', reqHandler.checkAuthorization,
   catch (error) 
   {
     req.logger.error('Error inserting user:', error);
-    let result = req.resHandler.payload(true, 500, res.response_codes['500'], {});
+    let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
     return req.resHandler.output(result, 500, 'application/json');
   }
 });
+/*
+** method: GET
+** uri: /user/details/:sid
+*/
+app.get('/user/details/:sid', async (req, res) => 
+  {
+    try 
+    {
+      const userData = await db.query('SELECT * FROM users WHERE id = ? AND status = ?', [req.params.sid, 1]);
+      if (userData.length == 0)
+      {
+        let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
+        return req.resHandler.output(result, 500, 'application/json');
+      }
+      const data =
+      {
+        sid: userData[0].id,
+        avatar: userData[0].avatar,
+        //description: userData[0].description,
+        //date_inserted: listing[0].date_inserted
+        art_name: ((userData[0].art_name) ? userData[0].art_name : 'Anonymous'),
+        listings: {}
+      }
+      const listing = await db.query('SELECT * FROM listings WHERE user_id = ? AND status = ?', [userData[0].id, 1]);
+      if (listing.length > 0) {
+          data.listings = listing.map(listingItem => {
+              const { id, ...rest } = listingItem;
+              return rest;
+          });
+      }
+      let result = req.resHandler.payload(true, 200, 'User listings data retrieved successfully', data);
+      return req.resHandler.output(result, 200, 'application/json');
+    }
+    catch (error) 
+    {
+      req.logger.error('Error inserting listing:', error);
+      let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
+      return req.resHandler.output(result, 500, 'application/json');
+    }
+  });   
 /*
 ** method: POST
 ** uri: /listing 
@@ -231,52 +275,58 @@ app.put('/user', reqHandler.checkAuthorization,
 app.post('/listing', reqHandler.checkAuthorization, 
 [
   body('nft_id').notEmpty().withMessage('Nft id is required and cannot be empty'),
+  body('address').notEmpty().withMessage('Wallet address cannot be empty'),
 ], handleValidationErrors, async (req, res) => 
 {
   try 
   {
     await db.query('DELETE from listings WHERE nft_id = ?', [req.body.nft_id]);
     const userData = await db.query('SELECT * from users WHERE email = ?', [req.user.email]);
-    await db.query('INSERT INTO listings (nft_id, user_id, status) VALUES (?, ?, ?)', [req.body.nft_id, userData[0].id, 1]);
+    await db.query('INSERT INTO listings (nft_id, user_id, address, status) VALUES (?, ?, ?, ?)', 
+    [
+      req.body.nft_id, 
+      userData[0].id, 
+      req.body.address, 
+      1
+    ]);
     let result = req.resHandler.payload(true, 200, 'Listing inserted successfully', { });
     return req.resHandler.output(result, 200, 'application/json');
-  } 
+  }
   catch (error) 
   {
     req.logger.error('Error inserting listing:', error);
-    let result = req.resHandler.payload(true, 500, res.response_codes['500'], {});
+    let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
     return req.resHandler.output(result, 500, 'application/json');
   }
 });
 /*
 ** method: GET
-** uri: /listing
-** params: nft_id
+** uri: /listing/:id
 */
-app.get('/listing', 
-[
-  body('nft_id').notEmpty().withMessage('Nft id is required and cannot be empty'),
-], handleValidationErrors, async (req, res) => 
+app.get('/listing/:id', async (req, res) => 
 {
+  const listingId = req.params.id;
   try 
   {
-    const listing = await db.query('SELECT * FROM  listings WHERE nft_id = ? AND status = ?', [req.body.nft_id, 1]);
+    const listing = await db.query('SELECT * FROM listings WHERE nft_id = ? AND status = ?', [listingId, 1]);
     if (listing.length == 0)
     {
-      let result = req.resHandler.payload(true, 700, res.response_codes['700'], {});
-      return req.resHandler.output(result, 500, 'application/json');
+      let result = req.resHandler.payload(false, 700, res.response_codes['700'], {});
+      return req.resHandler.output(result, 700, 'application/json');
     }
     const userData = await db.query('SELECT * FROM users WHERE id = ? AND status = ?', [listing[0].user_id, 1]);
     if (userData.length == 0)
     {
-      let result = req.resHandler.payload(true, 600, res.response_codes['600'], {});
-      return req.resHandler.output(result, 500, 'application/json');
+      let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
+      return req.resHandler.output(result, 600, 'application/json');
     }
     const data =
     {
+      sid: userData[0].id,
       avatar: userData[0].avatar,
-      description: userData[0].description,
-      date_inserted: listing[0].date_inserted
+      //description: userData[0].description,
+      //date_inserted: listing[0].date_inserted
+      art_name: ((userData[0].art_name) ? userData[0].art_name : 'Anonymous'),
     }
     let result = req.resHandler.payload(true, 200, 'Listing data retrieved successfully', data);
     return req.resHandler.output(result, 200, 'application/json');
@@ -284,7 +334,7 @@ app.get('/listing',
   catch (error) 
   {
     req.logger.error('Error inserting listing:', error);
-    let result = req.resHandler.payload(true, 500, res.response_codes['500'], {});
+    let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
     return req.resHandler.output(result, 500, 'application/json');
   }
 });
