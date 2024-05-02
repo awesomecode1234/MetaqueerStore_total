@@ -130,6 +130,15 @@ app.get('/', (req, res) =>
 });
 /*
 ** method: GET
+** uri: /env
+*/
+app.get('/env', (req, res) => 
+{
+  let result = req.resHandler.payload(true, 200, "nft market api", { env: process.env.ENVIRONMENT });
+  req.resHandler.output(result, 200, 'application/json');
+});
+/*
+** method: GET
 ** uri: /user 
 ** params: email
 */
