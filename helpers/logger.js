@@ -81,11 +81,11 @@ module.exports = function( session )
 		if ( data )
 		{
 			data = util.inspect( data , { "showHidden": false , "depth": null , "colors": true } );
-			console.error( "\x1b[41m" , '[' + this._getTime( ) + '][' + module.session + '] ' + msg + "\x1b[0m" , data );
+			console.log( "\x1b[41m" , '[' + this._getTime( ) + '][' + module.session + '] ' + msg + "\x1b[0m" , data );
 		}
 		else
 		{
-			console.error( "\x1b[41m" , '[' + this._getTime( ) + '][' + module.session + '] ' + msg + "\x1b[0m" );
+			console.log( "\x1b[41m" , '[' + this._getTime( ) + '][' + module.session + '] ' + msg + "\x1b[0m" );
 		}
 		return false;
 	};

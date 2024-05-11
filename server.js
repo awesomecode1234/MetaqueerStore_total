@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+//const ethSigUtil = require('eth-sig-util');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
@@ -141,11 +143,91 @@ app.get('/env', (req, res) =>
   req.resHandler.output(result, 200, 'application/json');
 });
 /*
+** method: POST
+** uri: /verify-signature
+** params: address, signature, message, wallet
+*/
+app.post('/verify-signature', [
+  body('address').notEmpty().withMessage('address is required and cannot be empty'),
+  body('signature').notEmpty().withMessage('signature is required and cannot be empty'),
+  body('message').notEmpty().withMessage('message is required and cannot be empty'),
+  body('wallet').notEmpty().withMessage('wallet is required and cannot be empty')
+], handleValidationErrors, reqHandler.verifySignature, async (req, res) => {
+
+  try {
+    let data = await db.query('SELECT * from users WHERE address = ?', [req.body.address]);
+    if (data.length == 0) // we should insert a new user
+    {
+      let insertQuery = 'INSERT INTO users (address, wallet, art_name, avatar, status) VALUES (?, ?, ?, ?, ?)';
+      const randomNumber = Math.floor(Math.random() * 8) + 1;
+      const avatarFilename = `${randomNumber}.jpg`;
+      let userData = [req.body.address, req.body.wallet, 'Unnamed', avatarFilename, 1];
+      try 
+      {
+        await db.query(insertQuery, userData);
+        req.logger.msg('New user inserted successfully:', userData);
+        data = await db.query('SELECT * from users WHERE address = ?', [req.body.address]);
+      } 
+      catch (error) 
+      {
+        req.logger.error('Error inserting user:', error);
+        let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
+        return req.resHandler.output(result, 500, 'application/json');
+      }
+    }
+    if (data[0].status == 0)
+    {
+      let result = req.resHandler.payload(false, 601, res.response_codes['601'], {});
+      return req.resHandler.output(result, 601, 'application/json');
+    }
+    if (data.length > 0)
+    {
+      
+      try 
+      {
+        let sql = `UPDATE users SET wallet = ? WHERE address LIKE ?`;  
+        await db.query(sql, [req.body.wallet, req.body.address]);
+      }
+      catch (error) 
+      {
+        req.logger.error('Error updating user:', error);
+        let result = req.resHandler.payload(false, 500, res.response_codes['500'], {});
+        return req.resHandler.output(result, 500, 'application/json');
+      }
+   
+      const sanitizedData = data.map(({ id, ...rest }) => rest);
+      //const sanitizedData = data.map(({ id, ...rest }) => ({ sid: id, ...rest }));
+      const token = jwt.sign({ userId: data[0].id, address: req.body.address }, process.env.JWT_SECRET/*, { expiresIn: '1h' }*/);
+      const sanitizedDataWithToken = {
+        ...sanitizedData[0],
+        token: token
+      };
+      let result = req.resHandler.payload(true, 200, "Success retrieving user data", sanitizedDataWithToken);
+      return req.resHandler.output(result, 200, 'application/json');
+    }
+    let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
+    return req.resHandler.output(result, 200, 'application/json');
+  } 
+  catch (err) 
+  {
+    req.logger.error('Error retrieving user data:', err);
+    let errorResult = req.resHandler.payload(false, 500, "Internal Server Error", {});
+    return req.resHandler.output(errorResult, 500, 'application/json');
+  } 
+});
+
+app.post('/verify-token', reqHandler.verifyJwtToken, async(req, res) => {
+  console.log(req.jwt_data);
+  let result = req.resHandler.payload(false, 500, res.response_codes['500']);
+  req.resHandler.output(result, 500, 'application/json');
+});
+
+/*
 ** method: GET
 ** uri: /user 
 ** params: email
 */
-app.get('/user', reqHandler.checkAuthorization, async (req, res) => 
+/*app.get('/user', reqHandler.checkAuthorization, async (req, res) => 
 {
   if (req.user.email === null)
   {
@@ -195,7 +277,7 @@ app.get('/user', reqHandler.checkAuthorization, async (req, res) =>
     let errorResult = req.resHandler.payload(false, 500, "Internal Server Error", {});
     return req.resHandler.output(errorResult, 500, 'application/json');
   } 
-});
+});*/
 /*
 ** method: PUT
 ** uri: /user 
@@ -235,7 +317,7 @@ app.get('/user/details/:sid', async (req, res) =>
   {
     try 
     {
-      const userData = await db.query('SELECT * FROM users WHERE id = ? AND status = ?', [req.params.sid, 1]);
+      const userData = await db.query('SELECT * FROM users WHERE address = ? AND status = ?', [req.params.sid, 1]);
       if (userData.length == 0)
       {
         let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
@@ -243,21 +325,15 @@ app.get('/user/details/:sid', async (req, res) =>
       }
       const data =
       {
-        sid: userData[0].id,
+        sid: userData[0].address,
+        address: userData[0].address,
         avatar: userData[0].avatar,
         //description: userData[0].description,
         //date_inserted: listing[0].date_inserted
-        art_name: ((userData[0].art_name) ? userData[0].art_name : 'Anonymous'),
+        art_name: ((userData[0].art_name) ? userData[0].art_name : 'Unnamed'),
         listings: {}
       }
-      const listing = await db.query('SELECT * FROM listings WHERE user_id = ? AND status = ?', [userData[0].id, 1]);
-      if (listing.length > 0) {
-          data.listings = listing.map(listingItem => {
-              const { id, ...rest } = listingItem;
-              return rest;
-          });
-      }
-      let result = req.resHandler.payload(true, 200, 'User listings data retrieved successfully', data);
+      let result = req.resHandler.payload(true, 200, 'User data retrieved successfully', data);
       return req.resHandler.output(result, 200, 'application/json');
     }
     catch (error) 
