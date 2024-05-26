@@ -47,30 +47,6 @@ class Database
         try 
         {
             connection = mysql.createConnection(this.config);
-            //await connection.connect();
-            // Create tables if they do not exist
-            /*await this.query(`CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                firstname VARCHAR(255) DEFAULT NULL,
-                lastname VARCHAR(255) DEFAULT NULL,
-                email VARCHAR(255) NOT NULL,
-                avatar VARCHAR(255) DEFAULT NULL,
-                art_name VARCHAR(255) DEFAULT NULL,
-                description LONGTEXT DEFAULT NULL,
-                phone VARCHAR(255) DEFAULT NULL,
-                website VARCHAR(255) DEFAULT NULL,
-                date_inserted DATETIME DEFAULT CURRENT_TIMESTAMP,
-                status TINYINT(1) DEFAULT 0
-            )`);
-            await this.query(`CREATE TABLE IF NOT EXISTS listings (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                nft_id INT DEFAULT NULL,
-                user_id INT DEFAULT NULL,
-                address VARCHAR(255) DEFAULT NULL,
-                date_inserted DATETIME DEFAULT CURRENT_TIMESTAMP,
-                status TINYINT(1) DEFAULT 0
-            )`);*/
-
             await this.query(`CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 token VARCHAR(255) DEFAULT NULL,
@@ -109,7 +85,6 @@ class Database
         try 
         {
             connection = mysql.createConnection(this.config);
-            //await connection.connect();
             const result = await this.executeQuery(connection, sql, values);
             connection.end();
             return result;
