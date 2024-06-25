@@ -7,10 +7,13 @@ const { body, query, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const reqHandler = require('./helpers/request')();
 const responseCodes = require('./config/response_codes.json');
+const cors = require('cors');
+const models = require('./models/user');
+
+app.use(cors());
 
 Database = require('./helpers/database');
 
-app.set('trust proxy', 1);
 //app.get('/ip', (request, response) => response.send(request.ip));
 //app.get('/x-forwarded-for', (request, response) => response.send(request.headers['x-forwarded-for']));
 
@@ -106,19 +109,19 @@ if (process.env.ENVIRONMENT === 'prod'){
 }
 /*
 ** method: GET
-** uri: /
-*/
-app.get('/', (req, res) => {
+** uri: /-sds6spfffrfnulscabbo
 
+app.get('/', (req, res) => {
   let result = req.resHandler.payload(true, 200, "nft market api", {});
   req.resHandler.output(result, 200, 'application/json');
+  
 });
 /*
 ** method: GET
 ** uri: /env
 */
 app.get('/env', (req, res) => {
-
+  
   let result = req.resHandler.payload(true, 200, "nft market api", { env: process.env.ENVIRONMENT });
   req.resHandler.output(result, 200, 'application/json');
 });
@@ -136,6 +139,7 @@ app.post('/authenticate-user', [
 ], handleValidationErrors, reqHandler.checkUserAuthentication, async (req, res) => {
 
   try {
+    console.log(req.body);
     let user = await req.models.user.single(req.body.address); 
 
     if (!user) {
@@ -195,7 +199,7 @@ app.put('/user/details/:address', reqHandler.verifyJwtToken,
 
   const address = req.params.address;
   const expectedParams = ['art_name', 'avatar'];
-  const userData = expectedParams.map(param => req.body[param] || '');
+  const userData = expectedParams.map(param => req.body[param] || '');d
   //userData.push(req.user.email); // Add req.user.email to userData
   const [art_name, avatar] = userData;
   let user = null;
