@@ -137,7 +137,6 @@ app.post('/authenticate-user', [
   body('auth_type').notEmpty().withMessage('`auth_type` is required and cannot be empty'),
   body('wallet').notEmpty().withMessage('`wallet` is required and cannot be empty'),
 ], handleValidationErrors, reqHandler.checkUserAuthentication, async (req, res) => {
-
   try {
     console.log(req.body);
     let user = await req.models.user.single(req.body.address); 
@@ -152,9 +151,11 @@ app.post('/authenticate-user', [
         phone: (req?.user?.phone ?? null),
         status: 1
       };
-      user = await req.models.user.create(new_user_data);
+      let newuser = await req.models.user.create(new_user_data);
+      console.log(newuser);
+      user = newuser;
     }
-
+    
     if (user) {
 
       if (user.status == 0) {

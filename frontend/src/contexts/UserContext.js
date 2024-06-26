@@ -193,10 +193,10 @@ export const UserProvider = ({ children }) =>
                 }
             }
         );
-
         if (response.status === 200 && response.data.result.success) {
             setUserStorageData(response.data.result.data);
             setUserData(response.data.result.data);
+            console.log(userData);
             return true;
         }
 
