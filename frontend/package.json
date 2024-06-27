@@ -44,9 +44,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "prebuild": "[ ! -d temp ] && mkdir temp && cp -r build/.htaccess build/README.md build/.git build/.gitignore build/.gitalias temp || true",
     "build": "react-app-rewired build",
-    "postbuild": "cp -r temp/.htaccess temp/README.md temp/.git temp/.gitignore temp/.gitalias build && chown -R :sudo build && chmod -R g+w build && rm -rf temp",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },

@@ -9,6 +9,7 @@ const reqHandler = require('./helpers/request')();
 const responseCodes = require('./config/response_codes.json');
 const cors = require('cors');
 const models = require('./models/user');
+const path = require('path');
 
 app.use(cors());
 
@@ -16,6 +17,13 @@ Database = require('./helpers/database');
 
 //app.get('/ip', (request, response) => response.send(request.ip));
 //app.get('/x-forwarded-for', (request, response) => response.send(request.headers['x-forwarded-for']));
+
+// Serve the static files from the React app
+app.use("/", express.static(path.join(__dirname, 'build')));
+// Handles any requests that don't match the ones above
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -136,7 +144,7 @@ app.post('/authenticate-user', [
   body('address').notEmpty().withMessage('`address` is required and cannot be empty'),
   body('auth_type').notEmpty().withMessage('`auth_type` is required and cannot be empty'),
   body('wallet').notEmpty().withMessage('`wallet` is required and cannot be empty'),
-], handleValidationErrors, reqHandler.checkUserAuthentication, async (req, res) => {
+],  handleValidationErrors, reqHandler.checkUserAuthentication, async (req, res) => {
   try {
     console.log(req.body);
     let user = await req.models.user.single(req.body.address); 
@@ -333,14 +341,14 @@ app.get('/user/details/:sid', async (req, res) => {
 });
 
 // *** The 404 Route, last route ***
-app.all('*', (req , res) => {
-  let msg = 'No service is associated with the url => ' + req.url;
-	req.logger.error(msg);
-	let result = req.resHandler.notFound(msg, {});
-	res.header('Content-Type', 'application/json');
-  console.log(msg);
-	res.status(404).send(result);	
-});
+// app.all('*', (req , res) => {
+//   let msg = 'No service is associated with the url => ' + req.url;
+// 	req.logger.error(msg);
+// 	let result = req.resHandler.notFound(msg, {});
+// 	res.header('Content-Type', 'application/json');
+//   console.log(msg);
+// 	res.status(404).send(result);	
+// });
 
 app.use(function(err, req, res, next) {
 	logger = require('./helpers/logger')(req.session);
