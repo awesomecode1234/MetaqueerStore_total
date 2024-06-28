@@ -158,7 +158,6 @@ export const UserProvider = ({ children }) =>
     };
 
     const verifyParticleAuth =  async (address, userInfo) => {
-
         try {
             const userDataFromStorage = getUserStorageData();
 
@@ -196,7 +195,7 @@ export const UserProvider = ({ children }) =>
         if (response.status === 200 && response.data.result.success) {
             setUserStorageData(response.data.result.data);
             setUserData(response.data.result.data);
-            console.log(userData);
+            console.log("userData" , userData);
             return true;
         }
 

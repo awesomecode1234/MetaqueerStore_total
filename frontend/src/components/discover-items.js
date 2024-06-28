@@ -90,14 +90,16 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
     useEffect(() => {
         const loadMarketItemList = async () => {
             const marketItemArray = await getMarketItems();
+            console.log(marketItemArray);
             if (!marketItemArray ||!Array.isArray(marketItemArray) ||!marketItemArray.length) {
                 return [];
             }
             const fileteredArray =  marketItemArray.filter(item => {
                 try{
+
                     if ((item.isAuction && showAuction)||(!item.isAuction&& showSale)) 
                         if((!dataType)||(item.itemType === dataType))
-                            if ((!seller)||(item.seller === seller ))                                
+                            if ((!seller)||(item.seller.toUpperCase() === seller.toUpperCase()))                                
                                 if ((!searchString) || (JSON.stringify(item).includes(searchString)))
                                     return true;
                     return false;
