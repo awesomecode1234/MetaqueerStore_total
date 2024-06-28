@@ -1,0 +1,333 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.18;
+
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+
+contract NFTMarketplace is OwnableUpgradeable, ReentrancyGuardUpgradeable, ERC721URIStorageUpgradeable {
+    using SafeERC20Upgradeable for IERC20Upgradeable;
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+    Counters.Counter private _itemsSold;
+    Counters.Counter public _auctions;
+    Counters.Counter public _fixedListings;
+    Counters.Counter public _allBids;
+    uint256 listingPrice;
+    mapping(uint256 => MarketItem) private idToMarketItem;
+    mapping(uint256 => AuctionListing) public auctionListings;
+    mapping(uint256 => Bid) internal auctionBids;
+
+    struct MarketItem {
+        uint256 tokenId;
+        address collectionAddress;
+        address payable seller;
+        address payable owner;
+        uint256 price;
+        bool sold;
+    }
+
+    struct AuctionListing {
+        address collectionAddress;
+        uint tokenId;
+        uint256 highestBid;
+        address highestBidder;
+        uint256 endTime;
+        address owner;
+        bool active;
+        uint256[] bids;
+        uint256 totalBids;
+    }
+    struct Bid {
+        address bidder;
+        uint256 amount;
+    }
+
+    event MarketItemCreated(
+        uint256 indexed tokenId,
+        address seller,
+        address owner,
+        uint256 price,
+        bool sold
+    );
+    event NFTAuctionListed(
+        uint256 indexed tokenId,
+        uint256 startingBid,
+        uint256 endTime
+    );
+
+    function initialize() public initializer {
+        __Ownable_init();
+        __ReentrancyGuard_init();
+        listingPrice = 0 ether;
+    }
+
+     function createToken(
+        string memory _tokenURI,
+        uint256 _price
+    ) public payable returns (uint256) {
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+
+        _mint(msg.sender, newTokenId);
+        _setTokenURI(newTokenId, _tokenURI);
+        createMarketItem(newTokenId, _price);
+        return newTokenId;
+    }
+
+    function createMarketItem(uint256 tokenId, uint256 price) private {
+        require(price > 0, "Price must be at least 1 wei");
+        require(
+            msg.value == listingPrice,
+            "Price must be equal to listing price"
+        );
+
+        idToMarketItem[tokenId] = MarketItem(
+            tokenId,
+            0x301E1528bAD61177eF8Ff89bD4ad6760581e5409,
+            payable(msg.sender),
+            payable(address(this)),
+            price,
+            false
+        );
+
+        _transfer(msg.sender, address(this), tokenId);
+        emit MarketItemCreated(
+            tokenId,
+            msg.sender,
+            address(this),
+            price,
+            false
+        );
+    }
+
+    function updateListingPrice(
+        uint256 _listingPrice
+    ) public payable onlyOwner {
+        require(
+            owner() == msg.sender,
+            "Only marketplace owner can update listing price."
+        );
+        listingPrice = _listingPrice;
+    }
+
+    function startAuction(
+        uint256 tokenId,
+        uint256 startingBid,
+        uint256 duration,
+        address collectionAddress
+    ) public payable {
+        IERC721Upgradeable token = IERC721Upgradeable(collectionAddress);
+        require(token.ownerOf(tokenId) == msg.sender, "Not the owner");
+        token.transferFrom(msg.sender, address(this), tokenId);
+
+        require(
+            msg.value >= listingPrice,
+            "Starting bid must be greater than 0"
+        );
+        uint256 endTime = block.timestamp + duration;
+        uint256[] memory bids;
+        uint256 auctionId = _auctions.current();
+        auctionListings[auctionId] = AuctionListing(
+            collectionAddress,
+            tokenId,
+            startingBid,
+            address(0),
+            endTime,
+            msg.sender,
+            true,
+            bids,
+            0
+        );
+        _auctions.increment();
+        emit NFTAuctionListed(tokenId, startingBid, endTime);
+    }
+
+    function endAuction(uint256 auctionId) public nonReentrant {
+        AuctionListing storage listing = auctionListings[auctionId];
+        require(block.timestamp >= listing.endTime, "Auction not yet ended");
+        require(listing.active, "Auction not active");
+        require(listing.owner == msg.sender, "Not the owner");
+
+        listing.active = false;
+        IERC721Upgradeable token = IERC721Upgradeable(
+            listing.collectionAddress
+        );
+        token.transferFrom(
+            address(this),
+            listing.highestBidder,
+            listing.tokenId
+        );
+        payable(listing.owner).transfer(listing.highestBid);
+    }
+
+    function placeBid(uint256 auctionId) public payable {
+        AuctionListing storage listing = auctionListings[auctionId];
+        require(block.timestamp < listing.endTime, "Auction ended");
+        require(msg.value > listing.highestBid, "Bid too low");
+
+        if (listing.highestBidder != address(0)) {
+            payable(listing.highestBidder).transfer(listing.highestBid);
+        }
+
+        listing.highestBid = msg.value;
+        listing.highestBidder = msg.sender;
+        auctionBids[_allBids.current()] = Bid(msg.sender, msg.value);
+        listing.bids[listing.totalBids] = _allBids.current();
+        _allBids.increment();
+        listing.totalBids += 1;
+    }
+
+    function getAllBids(uint256 auctionId) public view returns (Bid[] memory) {
+        AuctionListing storage listing = auctionListings[auctionId];
+        Bid[] memory bids = new Bid[](listing.totalBids);
+        for (uint256 i = 0; i < listing.totalBids; i++) {
+            bids[i] = auctionBids[listing.bids[i]];
+        }
+        return bids;
+    }
+
+    function getAuctionListing(
+        uint256 auctionId
+    ) public view returns (AuctionListing memory) {
+        return auctionListings[auctionId];
+    }
+
+    function getAllAuctionListings()
+        public
+        view
+        returns (AuctionListing[] memory)
+    {
+        uint256 totalAuctions = _auctions.current();
+        AuctionListing[] memory auctions = new AuctionListing[](totalAuctions);
+        for (uint256 i = 0; i < totalAuctions; i++) {
+            AuctionListing storage currentAuction = auctionListings[i];
+            auctions[i] = currentAuction;
+        }
+        return auctions;
+    }
+
+    function getListingPrice() public view returns (uint256) {
+        return listingPrice;
+    }
+
+    function listNFT(
+        uint256 tokenId,
+        uint256 price,
+        address collectionAddress
+    ) public payable {
+        require(price > 0, "Price must be at least 1 wei");
+        require(
+            msg.value == listingPrice,
+            "Price must be equal to listing price"
+        );
+        uint256 listingId = _fixedListings.current();
+        idToMarketItem[listingId] = MarketItem(
+            tokenId,
+            collectionAddress,
+            payable(msg.sender),
+            payable(address(this)),
+            price,
+            false
+        );
+        _fixedListings.increment();
+        IERC721Upgradeable token = IERC721Upgradeable(collectionAddress);
+        token.transferFrom(msg.sender, address(this), tokenId);
+        emit MarketItemCreated(
+            tokenId,
+            msg.sender,
+            address(this),
+            price,
+            false
+        );
+    }
+
+    function buyFromListing(uint256 listingId) public payable {
+        uint256 price = idToMarketItem[listingId].price;
+        require(
+            msg.value == price,
+            "Please submit the asking price in order to complete the purchase"
+        );
+        idToMarketItem[listingId].owner = payable(msg.sender);
+        idToMarketItem[listingId].sold = true;
+        _itemsSold.increment();
+        IERC721Upgradeable token = IERC721Upgradeable(
+            idToMarketItem[listingId].collectionAddress
+        );
+        token.transferFrom(
+            address(this),
+            msg.sender,
+            idToMarketItem[listingId].tokenId
+        );
+        payable(owner()).transfer(listingPrice);
+        payable(idToMarketItem[listingId].seller).transfer(msg.value);
+        idToMarketItem[listingId].seller = payable(address(0));
+    }
+
+    function fetchMarketItems() public view returns (MarketItem[] memory) {
+        uint256 itemCount = _fixedListings.current();
+        uint256 unsoldItemCount = _fixedListings.current() -
+            _itemsSold.current();
+        uint256 currentIndex = 0;
+
+        MarketItem[] memory items = new MarketItem[](unsoldItemCount);
+        for (uint256 i = 0; i < itemCount; i++) {
+            if (idToMarketItem[i].owner == address(this)) {
+                uint256 currentId = i;
+                MarketItem storage currentItem = idToMarketItem[currentId];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
+        }
+        return items;
+    }
+
+    function fetchMyNFTs() public view returns (MarketItem[] memory) {
+        uint256 totalItemCount = _fixedListings.current();
+        uint256 itemCount = 0;
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i].owner == msg.sender) {
+                itemCount += 1;
+            }
+        }
+
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i].owner == msg.sender) {
+                MarketItem storage currentItem = idToMarketItem[i];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
+        }
+        return items;
+    }
+
+    function fetchItemsListed() public view returns (MarketItem[] memory) {
+        uint256 totalItemCount = _fixedListings.current();
+        uint256 itemCount = 0;
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i].seller == msg.sender) {
+                itemCount += 1;
+            }
+        }
+
+        MarketItem[] memory items = new MarketItem[](itemCount);
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i].seller == msg.sender) {
+                MarketItem storage currentItem = idToMarketItem[i];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
+        }
+        return items;
+    }
+}
