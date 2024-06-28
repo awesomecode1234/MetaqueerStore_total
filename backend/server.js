@@ -19,11 +19,13 @@ Database = require('./helpers/database');
 //app.get('/x-forwarded-for', (request, response) => response.send(request.headers['x-forwarded-for']));
 
 // Serve the static files from the React app
-app.use("/", express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'build')));
+
 // Handles any requests that don't match the ones above
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -360,7 +362,7 @@ app.use(function(err, req, res, next) {
 	res.status(500).send(result);	
 });
 
-const port = process.env.SERVICE_PORT || 5000;
+const port = process.env.SERVICE_PORT || 80;
 const host = process.env.SERVICE_ADDRESS || '0.0.0.0';
 const timeout = parseInt(process.env.TIMEOUT);
 
