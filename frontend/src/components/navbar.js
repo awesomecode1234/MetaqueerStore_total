@@ -381,7 +381,7 @@ export default function Navbar()
                                                
                                                 <ul className="py-2 text-start">
                                                     <li>
-                                                        <Link to={`${urls.user_nfts}/${account}`} className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><AiOutlineUser className="text-[16px] align-middle me-1"/>My NFT</Link>
+                                                        <Link to={`/user-nfts/${account}`} className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><AiOutlineUser className="text-[16px] align-middle me-1"/>My NFT</Link>
                                                     </li>
                                                     <li>
                                                         <Link to={`${urls.creator_profile}/${account}`} className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><AiOutlineUser className="text-[16px] align-middle me-1"/>My Profile</Link>
@@ -469,7 +469,12 @@ export default function Navbar()
                             </li>*/}
                         
                             {account ? (
+                                <>
+                                <li>
+                                    <Link to={`/user-nfts/${account}`}className="sub-menu-item">My NFT</Link>
+                                </li>
                                 <li><Link to={urls.upload_work} className="sub-menu-item">Upload Works</Link></li>
+                                </>
                             ) : (
                                 <li><Link to={urls.become_creator} className="sub-menu-item">Become Creator</Link></li>
                             )}

@@ -38,7 +38,7 @@ import Activity from './pages/explore/activity';
 import Collections from './pages/explore/collections';
 import Wallet from './pages/wallet';
 import UploadWork from './pages/explore/upload-work';
-import ListNFT from './pages/explore/list-nft';
+import UserNFTs from './pages/explore/usernfts';
 import HelpcenterFaqs from './pages/helpcenter/helpcenter-faqs';
 import PrivacyPolicy from './pages/privacy-policy';
 import LockScreen from './pages/auth/lock-screen';
@@ -67,27 +67,19 @@ function App()
       <ScrollToTop />
       <UserProvider>
         <NFTMarketplaceContextProvider>
-          <Routes>
+        <Routes>
             <Route path={urls.home} element={<Index />} /> 
             <Route path='/explore-one' element={<ExploreOne />} />
             <Route path='/auction' element={<Auction />} />
-            <Route path='/sale' element={<Sale />} />
+            <Route path='/sale' element={<Sale />} />    
             <Route path='/activity' element={<Activity />} />
             <Route path='/collections' element={<Collections />} />
             <Route path='/wallet' element={<Wallet />} />
             <Route exact path={urls.upload_work} element={<ProtectedRoute/>}>
               <Route exact path={urls.upload_work} element={<UploadWork/>}/>
             </Route>
-
-           {/*<Route path="/index-six" element={<IndexSix />} />
-            <Route path="/index-five" element={<IndexFive />} />*/}
-
             <Route path={urls.item_detail} element={<ItemDetail />} />
             <Route path={urls.item_detail_id} element={<ItemDetail />} />
-            {/*<Route path='/helpcenter-guides' element={<Guides />} />
-            <Route path='/helpcenter-support' element={<Support />} />
-            <Route path='/helpcenter-support' element={<Support />} />
-            <Route path='/helpcenter-faqs' element={<HelpcenterFaqs />} />*/}
             <Route path={urls.privacy} element={<PrivacyPolicy />} />
             <Route path={urls.terms} element={<Terms />} />
             <Route path={urls.coming_soon} element={<Comingsoon />} />
@@ -106,14 +98,13 @@ function App()
             <Route path='/blog-detail/:id' element={<BlogDetail />} />
 
             <Route path={urls.become_creator} element={<BecomeCreator />} />
-            {/*<Route path={urls.creator_profile} element={<CreatorProfile />} />*/}
             <Route path={urls.creator_profile_id} element={<CreatorProfile />} />
             <Route exact path={urls.creator_profile_edit} element={<ProtectedRoute/>}>
               <Route exact path={urls.creator_profile_edit} element={<CreatorProfileEdit/>}/>
             </Route>
-            <Route exact path={urls.user_nfts_id} element={<ProtectedRoute/>}>
-              <Route exact path={urls.user_nfts_id} element={<ListNFT/>}/>
-            </Route>
+            <Route path="/user-nfts/:id" element={<UserNFTs />} /> {/* Updated Route */}
+            <Route path={urls.user_nfts_id} element={<UserNFTs />} />
+
             <Route path={urls.creators} element={<Creators />} />
             <Route path={urls.aboutus} element={<About />} />
             <Route path={urls.contact} element={<Contact />} />

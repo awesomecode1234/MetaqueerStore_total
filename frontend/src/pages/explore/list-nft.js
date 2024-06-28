@@ -9,6 +9,7 @@ import UserContext from '../../contexts/UserContext';
 import { Circles } from 'react-loader-spinner';
 import { useConnectModal } from '@particle-network/connectkit';
 import urls from '../../constants/urls';
+import DiscoverItems from '../../components/discover-items';
 //import { useNFTMarketplace } from '../../contexts/NFTMarketplaceContext';
 
 export default function ListNFT() {
@@ -25,7 +26,7 @@ export default function ListNFT() {
     const id = params.id;
 	const connectModal = useConnectModal();
 	const navigate = useNavigate();
-
+	console.log(id);
     useEffect(() => {
 		document.documentElement.classList.add("dark");
 	}, []);
@@ -70,7 +71,7 @@ export default function ListNFT() {
     }, [isUserAuthenticated]);
 
 	useEffect(() => {
-
+		console.log(id);
         if (isUserAuthenticated && userData.address !== id) {
 			navigate(urls.home);
         }
@@ -103,28 +104,12 @@ export default function ListNFT() {
 						</h3>
 					</div>
 				</div>
-
-				{/*<div className="absolute text-center z-10 bottom-5 start-0 end-0 mx-3">
-					<ul className="breadcrumb tracking-[0.5px] breadcrumb-light mb-0 inline-block">
-						<li className="inline breadcrumb-item text-[15px] font-semibold duration-500 ease-in-out text-white/50 hover:text-white">
-							<Link to="/index">MetaQueer</Link>
-						</li>
-						<li
-							className="inline breadcrumb-item text-[15px] font-semibold duration-500 ease-in-out text-white"
-							aria-current="page"
-						>
-							Create Item
-						</li>
-					</ul>
-				</div>*/}
-				
-                {/*<UserNftGrid title="My NFT" description="You can manage your nft in this section" pagination={true} />*/}
-
 			</section>
-
-			<section className="relative" style={{ paddingBottom: '100px' }}>
-				<UserNftGrid pagination={false} />
-			</section>
+			
+			<section className="relative py-16">
+                <DiscoverItems allData={true} pagination={true} showAuction={true} showSale={true} title={'My NFTs on Sale or Auction'} seller ={id}/>
+                {/* <AuctionsTwo pagination={true} allData={true}/> */}
+            </section>
 
 			<Footer />
 			<Switcher />

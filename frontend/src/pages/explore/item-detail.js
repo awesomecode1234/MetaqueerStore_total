@@ -39,22 +39,22 @@ export default function ItemDetail() {
   (marketItem.startTime === startTime && marketItem.endTime === endTime && marketItem.etherPrice === currentValue && marketItem.isAuction === currentType                                
   ));
 
-  // let contractAddress;
+  let contractAddress;
 
-  // switch (process.env.REACT_APP_CHAIN_ENV) {
-  //   case "dev":
-  //     contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_DEV;
-  //     break;
-  //   case "testing":
-  //     contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_TESTING;
-  //     break;
-  //   case "prod":
-  //     contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_PROD;
-  //     break;
-  //   default:
-  //     contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_DEV;
-  //     break;
-  // }
+  switch (process.env.REACT_APP_CHAIN_ENV) {
+    case "dev":
+      contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_DEV;
+      break;
+    case "testing":
+      contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_TESTING;
+      break;
+    case "prod":
+      contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_PROD;
+      break;
+    default:
+      contractAddress = process.env.REACT_APP_CONTRACT_PROXY_ADDRESS_DEV;
+      break;
+  }
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
