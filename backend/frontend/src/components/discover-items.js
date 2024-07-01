@@ -52,7 +52,7 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                     item.style.height = `${maxHeight}px`;
                     const image = item.querySelector('img');
                     image.style.height = `${maxImageHeight}px`;
-                    image.style.objectFit = 'cover';
+                    //image.style.objectFit = 'cover';
                 });
             });
         };
@@ -136,15 +136,15 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                         <div key={String(index)} className="group relative overflow-hidden p-2 rounded-lg bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 hover:shadow-md dark:shadow-md hover:dark:shadow-gray-700 transition-all duration-500 hover:-mt-2 h-fit">
                             <div className="relative overflow-hidden">
                                 <div className="relative overflow-hidden rounded-lg">
-                                <LazyLoad height={200} offset={100} placeholder={<img src="placeholder.jpg" alt="loading..." />}>
+                                {/* <LazyLoad height={250} offset={100} placeholder={<img src="placeholder.jpg" alt="loading..." />}> 
                                     <img
                                         src={String(item.image)}
-                                        className="rounded-lg shadow-md dark:shadow-gray-700 group-hover:scale-110 transition-all duration-500"
+                                        className="w-96 h-96 rounded-lg shadow-md dark:shadow-gray-700 group-hover:scale-110 transition-all duration-500"
                                         alt="NFT"
                                         onError={handleImageError}
                                     />
-                                </LazyLoad>
-                                    <img src={String(item.image)} className="rounded-lg shadow-md dark:shadow-gray-700 group-hover:scale-110 transition-all duration-500" alt="loading..." />
+                                </LazyLoad> */}
+                                    <img src={String(item.image)} className="w-full h-52 rounded-lg shadow-md dark:shadow-gray-700 group-hover:scale-110 transition-all duration-500" alt="loading..." />
                                 </div>
                                 <h4 style={{ color: item.isAuction ? 'orange' : 'cyan' }}>
                                     {item.isAuction ? 'On Auction' : 'On Sale'}
@@ -164,7 +164,7 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                                         <span className="text-[14px] font-semibold block">Seller: {item.seller} </span>
                                     </Link>
                                 </div> */}
-                                <div className="my-3">
+                                <div className="my-3 w-full h-14">
                                     <Link to={`/item-detail/${item.itemId}`} className="font-semibold hover:text-violet-600">
                                         <span className="text-[14px] font-semibold block">Description: {item.description}
                                         {item.isAuction && 
@@ -178,7 +178,7 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                                     </Link>
                                 </div>
                                 <div className="flex justify-between p-2 bg-gray-50 dark:bg-slate-800 rounded-lg shadow dark:shadow-gray-700">
-                                    <span className="text-[14px] font-semibold block">{item.isAuction? 'Highest Bid': 'Price'}<i className="mdi mdi-ethereum"></i> {formatPrice(item.price)} ETH</span>
+                                    <span className="text-[14px] font-semibold block">{item.isAuction? 'Highest Bid': 'Price'}<br></br><i className="mdi mdi-ethereum"></i> {formatPrice(item.price)} ETH</span>
                                 </div>
                             </div>
                         </div>

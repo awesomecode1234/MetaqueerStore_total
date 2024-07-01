@@ -32,19 +32,19 @@ root.render(
             ((process.env.REACT_APP_CHAIN_ENV === 'testing') ? PolygonAmoy : '')
           ],
           themeType: "dark"
-        },
+        }, 
         promptSettingConfig: {
           promptPaymentPasswordSettingWhenSign: 1,
           promptMasterPasswordSettingWhenLogin: 1
         },
         connectors: [
-          ...evmWallets({ 
-            projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID,
-            showQrModal: true
-          }),
+          // ...evmWallets({ 
+          //   projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID,
+          //   showQrModal: true
+          // }),
           metaMask({ })
-          , rainbow({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID }),
-          walletconnect({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID })
+          // , rainbow({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID }),
+          // walletconnect({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID })
         ]
       }}
       theme={'dark'}
