@@ -151,7 +151,7 @@ app.post('/authenticate-user', [
 ],  handleValidationErrors, reqHandler.checkUserAuthentication, async (req, res) => {
   try {
     let user = await req.models.user.single(req.body.address); 
-
+    
     if (!user) {
       const new_user_data = {
         address: req.body.address,
@@ -189,7 +189,6 @@ app.post('/authenticate-user', [
       console.log(result);
       return req.resHandler.output(result, 200, 'application/json');
     }
-
     let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
     return req.resHandler.output(result, 200, 'application/json');
 
