@@ -81,8 +81,8 @@ export default function ItemDetail() {
               setisItemLoading(false);
               return updatedItem;
             })
-            .then((updatedItem) => {
-              return axios
+            .then(async (updatedItem) => {
+              return await axios
                 .get(
                   process.env.REACT_APP_API_ADDRESS +
                     "/user/details/" +

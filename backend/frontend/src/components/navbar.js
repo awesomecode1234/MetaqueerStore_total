@@ -140,7 +140,7 @@ export default function Navbar()
                 console.log("connected particle", account, userInfo);
                 const isVerifid = await verifyParticleAuth(account, userInfo);
                 if (!isVerifid) {
-                    console.log("NIOT VERIFIEDDDD");
+                    console.log("NOT VERIFIED");
                     await disconnect();
                     return;
                 }

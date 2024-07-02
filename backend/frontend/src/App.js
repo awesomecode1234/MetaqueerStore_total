@@ -103,7 +103,7 @@ function App()
               <Route exact path={urls.creator_profile_edit} element={<CreatorProfileEdit/>}/>
             </Route>
             <Route path="/user-nfts/:id" element={<UserNFTs />} /> {/* Updated Route */}
-            <Route path={urls.user_nfts_id} element={<UserNFTs />} />
+            {/* <Route path={urls.user_nfts_id} element={<UserNFTs />} /> */}
 
             <Route path={urls.creators} element={<Creators />} />
             <Route path={urls.aboutus} element={<About />} />

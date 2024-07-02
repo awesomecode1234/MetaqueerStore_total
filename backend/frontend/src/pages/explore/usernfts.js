@@ -18,13 +18,16 @@ export default function UserNFTs() {
     const { userData, isUserAuthenticated } = useContext(UserContext);
     useEffect(() => {
         document.documentElement.classList.add('dark');
-    }, []);
-
-    useEffect( () =>  {
-        if (!isUserAuthenticated) {
+        if (!isUserAuthenticated) {   
 			navigate(urls.home);
         }
-    }, [isUserAuthenticated]);
+    }, []);
+
+    // useEffect( () =>  {
+    //     if (!isUserAuthenticated) {
+	// 		navigate(urls.home);
+    //     }
+    // }, [isUserAuthenticated]);
     
     return (
         <>

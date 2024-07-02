@@ -36,6 +36,8 @@ export const NFTMarketplaceContextProvider = ({ children }) =>
         setProvider(web3provider);
         const web3signer = web3provider.getSigner();
         setSigner(web3signer);
+        const address = await web3signer.getAddress();
+        console.log("Connected address:", address);
         setMarketPlaceContract(new ethers.Contract(MarketPlaceAddress, MarketPlaceABI, web3signer));
         setNFTContract(new ethers.Contract(NFTaddress, NFTABI, web3signer));
     };
@@ -65,12 +67,12 @@ export const NFTMarketplaceContextProvider = ({ children }) =>
             const web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING);
             const contract = new web3.eth.Contract(MarketPlaceABI, MarketPlaceAddress);
             const result = await contract.methods.getAllActiveItems().call();
+            setMarketItemList(result);
             return result;
         }
-
         catch (error) 
         {
-            console.error(error);
+            setMarketItemList([]);
             return [];
         }
     };
@@ -209,7 +211,7 @@ export const NFTMarketplaceContextProvider = ({ children }) =>
             // Get the mint price
             const _mintPrice = await mintPrice();
     
-            console.log(_mintPrice, _tokenURI, signer, priceInWei);
+            console.log(_mintPrice, _tokenURI, await signer.getAddress(), priceInWei);
     
             // Mint the NFT
             const tx = await NFTContract.mintNFT(_tokenURI,  {
@@ -404,7 +406,7 @@ export const NFTMarketplaceContextProvider = ({ children }) =>
     
     return (
         <NFTMarketplaceContext.Provider value={{ formatPrice ,buyMarketItem, getMarketItem, getMarketItems, addMarketItem, removeMarketItem, bid,
-            changeItemStateAndPrice, getUserMarketItems, createMarketItem, getBalance, getAccounts, connectWallet, updateProvider, fromUnixTimestamp, toUnixTimestamp }}>
+            changeItemStateAndPrice, getUserMarketItems, marketItemList, createMarketItem, getBalance, getAccounts, connectWallet, updateProvider, fromUnixTimestamp, toUnixTimestamp }}>
             {children}
         </NFTMarketplaceContext.Provider>
     );

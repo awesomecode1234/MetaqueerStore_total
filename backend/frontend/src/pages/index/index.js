@@ -51,7 +51,7 @@ export default function Index() {
             </section>
             <section id ="exploreitem" className="relative md:py-24 py-16">
                 <DiscoverItems showAuction={true} showSale ={true} pagination={true}/>
-                <Creator title="Best Creators & Sellers" description="We are a huge marketplace dedicated to connecting great artists of all Giglink with their fans and unique token collectors!" />
+                <Creator title="Best Creators & Sellers" description="We are a huge marketplace dedicated to connecting great artists of all unique token collectors!" />
                 <QA />
                 <GetTouch />
             </section>

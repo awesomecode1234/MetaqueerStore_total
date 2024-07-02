@@ -18,8 +18,6 @@ Database = require('./helpers/database');
 //app.get('/ip', (request, response) => response.send(request.ip));
 //app.get('/x-forwarded-for', (request, response) => response.send(request.headers['x-forwarded-for']));
 
-
-
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -210,7 +208,7 @@ app.put('/user/details/:address', reqHandler.verifyJwtToken,
 
   const address = req.params.address;
   const expectedParams = ['art_name', 'avatar'];
-  const userData = expectedParams.map(param => req.body[param] || '');d
+  const userData = expectedParams.map(param => req.body[param] || '');
   //userData.push(req.user.email); // Add req.user.email to userData
   const [art_name, avatar] = userData;
   let user = null;
@@ -315,10 +313,10 @@ app.get('/check-jwt-token', reqHandler.verifyJwtToken, async(req, res) => {
 ** method: GET
 ** uri: /user/details/:sid
 */
-app.get('/user/details/:sid', async (req, res) => {
+app.get('/user/details/:address', async (req, res) => {
 
   try {
-    const userData = await db.query('SELECT * FROM users WHERE address = ? AND status = ?', [req.params.sid, 1]);
+    const userData = await db.query('SELECT * FROM users WHERE address = ? AND status = ?', [req.params.address, 1]);
     if (userData.length == 0) {
       let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
       return req.resHandler.output(result, 500, 'application/json');

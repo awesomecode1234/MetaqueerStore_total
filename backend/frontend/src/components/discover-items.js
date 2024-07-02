@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
-import { ImTab, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdOutlineArrowForward } from "../assets/icons/vander";
+import { FaTable, ImTab, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdOutlineArrowForward } from "../assets/icons/vander";
 import { useNFTMarketplace } from '../contexts/NFTMarketplaceContext';
 import { forEach } from 'lodash';
 import { BotanixTestnet } from '@particle-network/chains';
 import LazyLoad from 'react-lazyload';
 
 
-export default function DiscoverItems({ title, showAuction, showSale, pagination, dataType, searchString, seller }) {
-    const { formatPrice, getMarketItems, fromUnixTimestamp  } = useNFTMarketplace();
-    const [tokenDataList, setTokenData] = useState([]);
-    const handleImageError = (event) => {
-        //event.target.src = 'fallback.jpg'; // Provide a fallback image
-        event.target.alt = 'Image failed to load';
-      };
-      
+export default function DiscoverItems({ title, showAuction, showSale, pagination, dataType, searchString, seller, itemCountPerPage=4 }) {
+    const { formatPrice, getMarketItems, fromUnixTimestamp, marketItemList  } = useNFTMarketplace();
+    const [tokenDataList, setTokenDataList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalItemCount, setTotalItemCount] = useState(0);
+
     useEffect(() => {
         const resizeItems = () => {
             const items = document.querySelectorAll('.group.relative');
@@ -91,20 +89,22 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
         }
         return arr;
     };
-    
+    useEffect(()=>{
+        const loadContextMarketItemList = async() =>{
+            await getMarketItems();    
+        }
+        loadContextMarketItemList();
+    }, []);
+
     useEffect(() => {
         const loadMarketItemList = async () => {
-            const marketItemArray = await getMarketItems();
-
-            console.log(marketItemArray);
-            if (!marketItemArray ||!Array.isArray(marketItemArray) ||!marketItemArray.length) {
-                return [];
-                setTokenData([]);
+            if (!marketItemList ||!Array.isArray(marketItemList) ||!marketItemList.length) {
+                setTokenDataList([]);
+                return;
             }
-            const fileteredArray =  marketItemArray.filter(item => {
+            const filteredArray =  marketItemList.filter(item => {
                 try{
-
-                    if ((item.isAuction && showAuction)||(!item.isAuction&& showSale)) 
+                    if ((item.isAuction && showAuction)||(!item.isAuction && showSale)) 
                         if((!dataType)||(item.itemType === dataType))
                             if ((!seller)||(item.seller.toUpperCase() === seller.toUpperCase()))                                
                                 if ((!searchString) || (JSON.stringify(item).includes(searchString)))
@@ -117,23 +117,23 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                     return false;
                 }
             }
-        );
-            const fetchedItems = await fetchSmartContractMarketItem(fileteredArray);
-            console.log(fetchedItems);
-            setTokenData(fetchedItems);
+            );
+            const fetchedItems = await fetchSmartContractMarketItem(filteredArray);
+            setTotalItemCount(fetchedItems.length);
+            const currentPageItems = fetchedItems.slice((currentPage-1)*itemCountPerPage, Math.min(currentPage*itemCountPerPage, fetchedItems.length)); 
+            setTokenDataList(currentPageItems);
         };
         loadMarketItemList();
-    }, [getMarketItems, showAuction, showSale, pagination, dataType, searchString]);
-
+    }, [marketItemList, showAuction, showSale, currentPage, dataType, searchString]);
     
     return (
         <>
             <div className="container">
-
+                {(tokenDataList.length>0) &&
                 <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mt-10 gap-[30px]">
-                    {tokenDataList.length && tokenDataList.map((item, index) => 
+                    { tokenDataList.map((item, index) => 
                         
-                        <div key={String(index)} className="group relative overflow-hidden p-2 rounded-lg bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 hover:shadow-md dark:shadow-md hover:dark:shadow-gray-700 transition-all duration-500 hover:-mt-2 h-fit">
+                        <div key={index} className="group relative overflow-hidden p-2 rounded-lg bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-800 hover:shadow-md dark:shadow-md hover:dark:shadow-gray-700 transition-all duration-500 hover:-mt-2 h-fit">
                             <div className="relative overflow-hidden">
                                 <div className="relative overflow-hidden rounded-lg">
                                 {/* <LazyLoad height={250} offset={100} placeholder={<img src="placeholder.jpg" alt="loading..." />}> 
@@ -185,7 +185,7 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                          
                     )}
                 </div>
-
+                }
                 {
                     pagination ? (
                         <div className="grid md:grid-cols-12 grid-cols-1 mt-8">
@@ -193,28 +193,28 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                                 <nav>
                                     <ul className="inline-flex items-center -space-x-px">
                                         <li>
-                                            <Link to="/#" className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 bg-white dark:bg-slate-900 hover:text-white shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">
-                                                <MdKeyboardArrowLeft className="text-[20px]"/>
-                                            </Link>
+                                            <div to="#" className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 bg-white dark:bg-slate-900 hover:text-white shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">
+                                                <MdKeyboardArrowLeft className="text-[20px]" onClick={() => setCurrentPage(Math.max(currentPage-4, 1))}/>
+                                            </div>
                                         </li>
+                                        { [...Array(Math.ceil(totalItemCount/itemCountPerPage)).keys()].map((index, page) => 
+                                            ((page >= currentPage-2) && (page <= currentPage+2)) &&
+                                                (                              
+                                                (page+1 === currentPage) ?
+                                                <li key={index}>
+                                                <div aria-current="page" className="z-10 w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-white bg-violet-600 shadow-sm dark:shadow-gray-700">{page+1}</div>
+                                                </li>
+                                                :
+                                                <li key={index}>          
+                                                <div  onClick={()=>setCurrentPage(page+1)} className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 hover:text-white bg-white dark:bg-slate-900 shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">{page+1}</div>
+                                                </li>
+                                                )
+                                            )    
+                                        }
                                         <li>
-                                            <Link to="/#" aria-current="page" className="z-10 w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-white bg-violet-600 shadow-sm dark:shadow-gray-700">1</Link>
-
-                                        </li>
-                                        <li>
-                                            <Link to="/#" className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 hover:text-white bg-white dark:bg-slate-900 shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">2</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/#" className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 hover:text-white bg-white dark:bg-slate-900 shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">3</Link>
-
-                                        </li>
-                                        <li>
-                                            <Link to="/#" className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 hover:text-white bg-white dark:bg-slate-900 shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">4</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/#" className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 bg-white dark:bg-slate-900 hover:text-white shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">
-                                                <MdKeyboardArrowRight className="text-[20px]"/>
-                                            </Link>
+                                            <div className="w-10 h-10 inline-flex justify-center items-center mx-1 rounded-full text-slate-400 bg-white dark:bg-slate-900 hover:text-white shadow-sm dark:shadow-gray-700 hover:border-violet-600 dark:hover:border-violet-600 hover:bg-violet-600 dark:hover:bg-violet-600">
+                                                <MdKeyboardArrowRight className="text-[20px]" onClick={() => setCurrentPage(Math.min(currentPage+4, Math.ceil(totalItemCount/itemCountPerPage)))}/>
+                                            </div>
                                         </li>
                                     </ul>
                                 </nav>

@@ -190,6 +190,7 @@ export default function UploadWork()
                     },
                 });
                 setImageURI(res.data.fastUrl);
+                console.log(res.data.fastUrl);
                 reader.onload = () => {
                     const parent = document.querySelector('.preview-box');
                     parent.innerHTML = `<img class="preview-content" src=${reader.result} />`;
@@ -374,7 +375,7 @@ export default function UploadWork()
                                                             <p> Token ID: {String(marketItem.tokenIds[0])} , Market Index: {String(marketItem.itemId)}</p>
                                                             <p> Seller: {marketItem.seller}</p>
                                                             <p> Price: {formatPrice(marketItem.price)}ETH, Type: {marketItem.isAuction? 'On Auction': 'On Sale'}</p>go to{' '}                                                           
-                                                            <Link to={`${urls.user_nfts}/${userData.address}`} style={{ color: 'blue' }}>my nft page</Link> to view it.
+                                                            <Link to={`/user-nfts/${userData.address}`} style={{ color: 'blue' }}>my nft page</Link> to view it.
                                                         </div>
                                                     )}
                                                     {failedMessage && (

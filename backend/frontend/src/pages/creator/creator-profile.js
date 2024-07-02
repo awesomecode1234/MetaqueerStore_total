@@ -29,10 +29,9 @@ export default function CreatorProfile() {
                 initialized.current = true;
                 const result = await getUserDetails(id);
                 result.avatar = getUserAvatar(result);
-
+                
                 if (result) {
-
-                    result.addresses = [id]
+                    result.addresses = [id];
                     setUserDetails(result);
                 }
                 else {
