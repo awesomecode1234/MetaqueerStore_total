@@ -4,7 +4,7 @@ import Team from '../components/team'
 import Blog from '../components/blog'
 import Footer from '../components/footer'
 import about from '../assets/images/about.jpg';
-import Switcher from '../components/switcher'
+//import Switcher from '../components/switcher'
 import { Link } from 'react-router-dom'
 import ModalVideo from 'react-modal-video'
 import "../../node_modules/react-modal-video/scss/modal-video.scss";
@@ -103,7 +103,7 @@ A platform like MetaQueer will greatly enhance a sense of identity. Through part
                 <Blog />
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

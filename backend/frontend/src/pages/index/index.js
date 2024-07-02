@@ -7,7 +7,7 @@ import QA from '../../components/qa';
 import GetTouch from '../../components/get-touch';
 import Footer from '../../components/footer';
 import Navbar from '../../components/navbar';
-import Switcher from '../../components/switcher';
+//import Switcher from '../../components/switcher';
 
 export default function Index() {
     useEffect(() => {
@@ -56,7 +56,7 @@ export default function Index() {
                 <GetTouch />
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

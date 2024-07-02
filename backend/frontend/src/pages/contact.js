@@ -3,7 +3,7 @@ import Navbar from '../components/navbar'
 import Footer from '../components/footer'
 
 import contact from '../assets/images/contact.svg';
-import Switcher from '../components/switcher';
+//import Switcher from '../components/switcher';
 import { Link } from 'react-router-dom';
 import {FaRegEnvelope, BsTelephone, FiMapPin} from "../assets/icons/vander"
 
@@ -149,7 +149,7 @@ export default function Contact() {
             </div>
 
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

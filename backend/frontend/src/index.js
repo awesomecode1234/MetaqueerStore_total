@@ -38,13 +38,14 @@ root.render(
           promptMasterPasswordSettingWhenLogin: 1
         },
         connectors: [
-          // ...evmWallets({ 
+          ...evmWallets({}), 
           //   projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID,
           //   showQrModal: true
-          // }),
-          metaMask({ })
+          //</React.StrictMode> }),
+          metaMask({ }),
           // , rainbow({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID }),
-          // walletconnect({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID })
+          //walletconnect({ projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID })
+          walletconnect({})
         ]
       }}
       theme={'dark'}

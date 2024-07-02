@@ -64,7 +64,28 @@ export const NFTMarketplaceContextProvider = ({ children }) =>
             //     return [];
             // }
             // const result = await MarketPlaceContract.getAllActiveItems();
-            const web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING);
+            let web3;
+            try{
+                web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING);
+            }catch{
+                try{
+                    web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING1);
+                }catch{
+                    try{
+                        web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING2);
+                    }catch{
+                        try{
+                            web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING3);
+                        }catch{
+                            try{
+                                web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING4);   
+                            }catch{
+                                web3 = new Web3(process.env.REACT_APP_CHAIN_ADDRESS_TESTING5);
+                            }
+                        }
+                    }
+                }
+            }
             const contract = new web3.eth.Contract(MarketPlaceABI, MarketPlaceAddress);
             const result = await contract.methods.getAllActiveItems().call();
             setMarketItemList(result);

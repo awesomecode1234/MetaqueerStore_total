@@ -318,7 +318,7 @@ app.get('/user/details/:address', async (req, res) => {
   try {
     const userData = await db.query('SELECT * FROM users WHERE address = ? AND status = ?', [req.params.address, 1]);
     if (userData.length == 0) {
-      let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
+      let result = req.resHandler.payload(false, 600, res.response_codes['600'], {sid:req.params.address, address:req.params.address, art_name: 'unnamed', avatar: null, listings: {}});
       return req.resHandler.output(result, 500, 'application/json');
     }
     const data = {

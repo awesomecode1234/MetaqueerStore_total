@@ -3,7 +3,7 @@ import Navbar from '../../components/navbar'
 import Footer from '../../components/footer'
 import Select from 'react-select'
 import DiscoverItems from '../../components/discover-items';
-import Switcher from '../../components/switcher';
+//import Switcher from '../../components/switcher';
 import {LuClock, LuSearch, AiOutlineAppstore, AiOutlineStar} from "../../assets/icons/vander"
 
 const options = [
@@ -152,7 +152,7 @@ export default function ExploreOne() {
                 <DiscoverItems title={'ALL MarketItems'} pagination={true} showAuction={showAuction} showSale = {showSale} dataType={dataType} searchString={searchString}/>
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

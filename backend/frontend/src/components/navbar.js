@@ -5,7 +5,7 @@ import logo_icon_28 from '../assets/images/logo-icon-28.png';
 import logo_dark from '../assets/images/logo-dark.png';
 import logo_white from '../assets/images/logo-white.png';
 import urls from '../constants/urls'
-import EnvDiv from './env-div';
+//import EnvDiv from './env-div';
 import { ConnectButton, useAccount, useConnectModal, useParticleConnect, useParticleProvider } from '@particle-network/connectkit'
 import { useAuthCore } from '@particle-network/auth-core-modal';
 import UserContext from '../contexts/UserContext';
@@ -290,7 +290,7 @@ export default function Navbar()
         <>
             <nav id="topnav" className="defaultscroll is-sticky">
 
-                <EnvDiv />
+                {/* <EnvDiv /> */}
                 
                 <div className="container">
                     {/* <!-- Logo container--> */}

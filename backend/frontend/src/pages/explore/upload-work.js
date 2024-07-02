@@ -116,7 +116,10 @@ export default function UploadWork()
             connectModal.openConnectModal();
             return;
         }
-
+        if (!imageURI){
+            alert("can not communicate with IPFS server");
+            return;
+        }
         try{
             setSubmitting(true);
             setLoading(true);
@@ -125,6 +128,7 @@ export default function UploadWork()
                 description: description,
                 image: imageURI
             };
+            
             console.log(jsonData);
             let res = await axios.post(process.env.REACT_APP_IPFS_JSON_URL, jsonData, {
                 auth: {
@@ -170,6 +174,7 @@ export default function UploadWork()
 
 		if (getFile.length !== 0) {
 			const uploadedFile = getFile[0];
+            console.log(uploadedFile);
 			await readFile(uploadedFile);
 		}
 
@@ -190,7 +195,6 @@ export default function UploadWork()
                     },
                 });
                 setImageURI(res.data.fastUrl);
-                console.log(res.data.fastUrl);
                 reader.onload = () => {
                     const parent = document.querySelector('.preview-box');
                     parent.innerHTML = `<img class="preview-content" src=${reader.result} />`;

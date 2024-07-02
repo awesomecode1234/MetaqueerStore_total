@@ -227,7 +227,7 @@ export default function ItemDetail() {
                   alt=""
                 />
 
-                <div className="bg-gray-50 dark:bg-slate-800 rounded-md shadow dark:shadow-gray-800 mt-[30px] p-6">
+                <div className="bg-gray-50 dark:bg-slate-800 rounded-md shadow dark:shadow-gray-800 mt-[30px] p-6 overflow-hidden">
                   <div>
                     <span className="font-medium text-slate-400 block mb-1">
                       NFT Address:
