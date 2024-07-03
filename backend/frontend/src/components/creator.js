@@ -1,8 +1,9 @@
-import React, { useEffect, useState }  from 'react';
+import React, { useEffect, useState, useContext }  from 'react';
 import { Link } from 'react-router-dom';
 import { data } from '../data/data';
 import {FiUserPlus} from "../assets/icons/vander"
 import { useNFTMarketplace } from '../contexts/NFTMarketplaceContext';
+import UserContext from '../contexts/UserContext';
 import axios from 'axios';
 import { availableMemory } from 'process';
 
@@ -10,7 +11,7 @@ export default function Creator(props) {
     const { marketItemList  } = useNFTMarketplace();
     const { title, description } = props;
     const [ sellerList, setSellerList] = useState([]);
-
+    const {  getUserAvatar } = useContext(UserContext);
     useEffect(() => {
         const fetchData = async () => {
             // Count the number of items each seller sells
@@ -39,7 +40,7 @@ export default function Creator(props) {
                     let user_data = await axios.get(process.env.REACT_APP_API_ADDRESS + '/user/details/' + seller);
                     console.log(user_data);
                     let userInfo = user_data.data.result.data;
-                    sortedSellerDatas.push({avatar: userInfo?.avatar, art_name: userInfo.art_name??'unnamed', itemCount: sellerCounts[seller]});
+                    sortedSellerDatas.push({avatar: getUserAvatar(userInfo), art_name: userInfo.art_name??'unnamed', address: seller, itemCount: sellerCounts[seller]});
                 } catch (e) {
                     sortedSellerDatas.push({avatar: null, art_name: 'unnamed', itemCount: sellerCounts[seller], address:seller});
                 }
