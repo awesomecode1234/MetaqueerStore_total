@@ -137,6 +137,7 @@ module.exports = function()
     module.verifyJwtToken = async function(req, res, next) {
 
         const { authorization } = req.headers;
+    
         if (!authorization) {
             result = req.resHandler.payload(false, 401, res.response_codes['401'], {});
             return req.resHandler.output(result, 401, 'application/json');	

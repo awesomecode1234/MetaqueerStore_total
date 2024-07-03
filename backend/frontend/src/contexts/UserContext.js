@@ -77,17 +77,18 @@ export const UserProvider = ({ children }) =>
         }
     };
 
-    const checkUserArtName = async (jwt_data, artName, address) => {
+    const checkUserArtName = async (artName, address) => {
 
         try {
-            const headers = {
-                'Authorization': jwt_data.token,
-            };
-            const response = await axios.get(`${backendURL}/user/check-artname/`, {
-                params: { art_name: artName, address: address },
-                headers: headers
-            });
-            return response;
+            const response = await axios.post(`${backendURL}/user/check-artname`, 
+                 { art_name: artName, address: address },
+                 {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                return response;
 
         } catch (error) {
             console.error('Error checking art name:', error);
@@ -98,10 +99,10 @@ export const UserProvider = ({ children }) =>
     const saveUserData = async (jwt_data, address, formData) => {
 
         try {
-            const url = `${backendURL}/user/details/${address}/`;
+            const url = `${backendURL}/user/details/${address}`;
             const headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': jwt_data.token,
+                'authorization': jwt_data.token,
             };
             const response = await axios.put(url, new URLSearchParams(formData).toString(), { headers });
             if (response.status === 200 && response.data.result.success) {

@@ -211,7 +211,8 @@ app.post('/api/authenticate-user', [
 ** uri: /user/details:address
 ** params: art_name, avatar
 */
-app.put('/api/user/details/:address', reqHandler.verifyJwtToken, 
+app.put('/api/user/details/:address',
+  //  reqHandler.verifyJwtToken, 
 [
   body('art_name').notEmpty().withMessage('`art_name` is required and cannot be empty'),
 ], handleValidationErrors, async (req, res) => {
@@ -269,17 +270,16 @@ app.put('/api/user/details/:address', reqHandler.verifyJwtToken,
 ** uri: /user/check-artname
 ** params: art_name, address
 */
-app.get('/api/user/check-artname', reqHandler.verifyJwtToken, 
+app.post('/api/user/check-artname', 
 [
-  query('art_name').notEmpty().withMessage('`art_name` is required and cannot be empty'),
-  query('address').notEmpty().withMessage('`address` is required and cannot be empty')
+  body('art_name').notEmpty().withMessage('`art_name` is required and cannot be empty'),
+  body('address').notEmpty().withMessage('`address` is required and cannot be empty')
 
 ], handleValidationErrors, async (req, res) => {
-
   try {
 
-    const art_name = req.query.art_name.toLowerCase();
-    const address = req.query.address;
+    const art_name = req.body.art_name.toLowerCase();
+    const address = req.body.address;
 
     if (art_name === "unnamed"){
       let result = req.resHandler.payload(true, 200, "Default artname", {});
@@ -334,11 +334,12 @@ app.get('/api/user/details/:address', async (req, res) => {
       sid: userData[0].address,
       address: userData[0].address,
       avatar: userData[0].avatar,
-      //description: userData[0].description,685eba5e-bf64-477d-b23d-55e669fe406f
+      //description: userData[0].description
       //date_inserted: listing[0].date_inserted
       art_name: ((userData[0].art_name) ? userData[0].art_name : 'unnamed'),
       listings: {}
     }
+    console.log(data);
     let result = req.resHandler.payload(true, 200, 'User data retrieved successfully', data);
     return req.resHandler.output(result, 200, 'application/json');
   

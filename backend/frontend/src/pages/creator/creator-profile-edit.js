@@ -53,8 +53,8 @@ export default function CreatorProfileEdit() {
         _.debounce(async (artName) => {
 
                 setIsLoading(true);
-                const response = await checkUserArtName(userData.jwt_data, artName, userData.address);
-
+                const response = await checkUserArtName( artName, userData.address);
+                console.log(response);
                 if (response && response.data.code === 602) {
                     alert('Art name already exists. Please choose a different name.');
                 } else {
@@ -184,12 +184,15 @@ export default function CreatorProfileEdit() {
                 );
                 const newAvatarUrl = uploadResponse.data.fastUrl || '';
                 formData.avatar = newAvatarUrl;
+                console.log(formData);
             } 
             await handleSaveUserData(formData);
             setIsLoading(false);
 
         } catch (error) {
             console.error('Error:', error);
+            formData.avatar = '/avatar/1.jpg';
+            await handleSaveUserData(formData);
             setIsLoading(false);
         }
     };
