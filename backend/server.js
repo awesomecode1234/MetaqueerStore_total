@@ -10,6 +10,10 @@ const responseCodes = require('./config/response_codes.json');
 const cors = require('cors');
 const models = require('./models/user');
 const path = require('path');
+const port = process.env.SERVICE_PORT || 5000;
+const host = process.env.SERVICE_ADDRESS || '0.0.0.0';
+const timeout = parseInt(process.env.TIMEOUT);
+// Define your routes here
 
 app.use(cors());
 
@@ -42,26 +46,30 @@ app.use(bodyParser.json());
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'frontend', 'build')));
 
-// Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+app.use(function(err, req, res, next) {
+	logger = require('./helpers/logger')(req.session);
+	let error = (err.hasOwnProperty('stack')) ? err.stack.split("\n", 1).join("") : err;
+	logger.error(((err.hasOwnProperty('stack')) ? err.stack : err));
+	result = req.resHandler.payload(false, 500, responseCodes['500'], {});
+	res.header('Content-Type', 'application/json');
+	res.status(500).send(result);	
 });
 
-app.use((req, res, next) => {
 
+// Handles any requests that don't match the ones above
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, UUID');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
   if (req.method === 'OPTIONS'){
     res.sendStatus(200);
-  } 
+  }
   else {
     next();
   }
 });
 
 app.use((req, res, next) => {
-
   if (req.method === 'OPTIONS') {
     next(); // Skip the redirect for OPTIONS requests
   } 
@@ -130,6 +138,10 @@ app.get('/', (req, res) => {
 ** method: GET
 ** uri: /env
 */
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
+// });
+
 app.get('/env', (req, res) => {
   
   let result = req.resHandler.payload(true, 200, "nft market api", { env: process.env.ENVIRONMENT });
@@ -142,7 +154,7 @@ app.get('/env', (req, res) => {
 ** params: address, wallet, auth_type (particle|wallet), ? particle[token, uuid], ? wallet[message, signature]
 ** return: user details and jwt data
 */
-app.post('/authenticate-user', [
+app.post('/api/authenticate-user', [
   body('address').notEmpty().withMessage('`address` is required and cannot be empty'),
   body('auth_type').notEmpty().withMessage('`auth_type` is required and cannot be empty'),
   body('wallet').notEmpty().withMessage('`wallet` is required and cannot be empty'),
@@ -163,7 +175,6 @@ app.post('/authenticate-user', [
       let newuser = await req.models.user.create(new_user_data);
       user = newuser;
     }
-    console.log(user);
     if (user) {
 
       if (user.status == 0) {
@@ -184,7 +195,6 @@ app.post('/authenticate-user', [
       };
       response.jwt_data = req.resHandler.buildJwToken(response);
       let result = req.resHandler.payload(true, 200, "Success retrieving user data", response);
-      console.log(result);
       return req.resHandler.output(result, 200, 'application/json');
     }
     let result = req.resHandler.payload(false, 600, res.response_codes['600'], {});
@@ -201,7 +211,7 @@ app.post('/authenticate-user', [
 ** uri: /user/details:address
 ** params: art_name, avatar
 */
-app.put('/user/details/:address', reqHandler.verifyJwtToken, 
+app.put('/api/user/details/:address', reqHandler.verifyJwtToken, 
 [
   body('art_name').notEmpty().withMessage('`art_name` is required and cannot be empty'),
 ], handleValidationErrors, async (req, res) => {
@@ -259,7 +269,7 @@ app.put('/user/details/:address', reqHandler.verifyJwtToken,
 ** uri: /user/check-artname
 ** params: art_name, address
 */
-app.get('/user/check-artname', reqHandler.verifyJwtToken, 
+app.get('/api/user/check-artname', reqHandler.verifyJwtToken, 
 [
   query('art_name').notEmpty().withMessage('`art_name` is required and cannot be empty'),
   query('address').notEmpty().withMessage('`address` is required and cannot be empty')
@@ -296,7 +306,7 @@ app.get('/user/check-artname', reqHandler.verifyJwtToken,
 ** method: GET
 ** uri: /check-jwt-token
 */
-app.get('/check-jwt-token', reqHandler.verifyJwtToken, async(req, res) => {
+app.get('/api/check-jwt-token', reqHandler.verifyJwtToken, async(req, res) => {
 
   const jwt_data = req.jwt_data;
   console.log(jwt_data);
@@ -313,8 +323,7 @@ app.get('/check-jwt-token', reqHandler.verifyJwtToken, async(req, res) => {
 ** method: GET
 ** uri: /user/details/:sid
 */
-app.get('/user/details/:address', async (req, res) => {
-
+app.get('/api/user/details/:address', async (req, res) => {
   try {
     const userData = await db.query('SELECT * FROM users WHERE address = ? AND status = ?', [req.params.address, 1]);
     if (userData.length == 0) {
@@ -325,7 +334,7 @@ app.get('/user/details/:address', async (req, res) => {
       sid: userData[0].address,
       address: userData[0].address,
       avatar: userData[0].avatar,
-      //description: userData[0].description,
+      //description: userData[0].description,685eba5e-bf64-477d-b23d-55e669fe406f
       //date_inserted: listing[0].date_inserted
       art_name: ((userData[0].art_name) ? userData[0].art_name : 'unnamed'),
       listings: {}
@@ -349,19 +358,6 @@ app.get('/user/details/:address', async (req, res) => {
 //   console.log(msg);
 // 	res.status(404).send(result);	
 // });
-
-app.use(function(err, req, res, next) {
-	logger = require('./helpers/logger')(req.session);
-	let error = (err.hasOwnProperty('stack')) ? err.stack.split("\n", 1).join("") : err;
-	logger.error(((err.hasOwnProperty('stack')) ? err.stack : err));
-	result = req.resHandler.payload(false, 500, responseCodes['500'], {});
-	res.header('Content-Type', 'application/json');
-	res.status(500).send(result);	
-});
-
-const port = process.env.SERVICE_PORT || 5000;
-const host = process.env.SERVICE_ADDRESS || '0.0.0.0';
-const timeout = parseInt(process.env.TIMEOUT);
 
 app.listen(port,() => {
 	let start_time = new Date( );

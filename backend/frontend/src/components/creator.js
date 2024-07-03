@@ -28,27 +28,30 @@ export default function Creator(props) {
             
             // Extract the sorted list of sellers from the sorted array
             const sortedSellers = sellerArray.map(seller => seller[0]);
-            const sortedSellerDatas = sortedSellers.map((seller)=>{
+            var sortedSellerDatas = sortedSellers.map((seller)=>{
                return { avatar: null, art_name: 'unnamed', address: seller, itemCount: sellerCounts[seller]}
             });
             setSellerList(sortedSellerDatas);
+            sortedSellerDatas = [];
             // Fetch additional data for each seller
-            const sortedSellerData = await Promise.all(sortedSellers.map(async (seller) => {
-                try {
+            for (let seller of sortedSellers) {
+                try{
                     let user_data = await axios.get(process.env.REACT_APP_API_ADDRESS + '/user/details/' + seller);
                     console.log(user_data);
                     let userInfo = user_data.data.result.data;
-                    return { avatar: userInfo?.avatar, art_name: userInfo?.art_name, address: seller, itemCount: sellerCounts[seller] };
-                } catch (error) {
-                    console.error(`Error fetching data for ${seller}:`, error);
-                    return { avatar: null, art_name: 'unnamed', address: seller, itemCount: sellerCounts[seller] };
+                    sortedSellerDatas.push({avatar: userInfo?.avatar, art_name: userInfo.art_name??'unnamed', itemCount: sellerCounts[seller]});
+                } catch (e) {
+                    sortedSellerDatas.push({avatar: null, art_name: 'unnamed', itemCount: sellerCounts[seller], address:seller});
                 }
-            }));
-
-            setSellerList(sortedSellers);
-        };
+            }
+            console.log(sortedSellerDatas);
+            if (sortedSellerDatas.length > 0) {
+                setSellerList(sortedSellerDatas);
+            }
+        }
 
         fetchData();
+
     }, [marketItemList]);
 
     return (
@@ -63,7 +66,7 @@ export default function Creator(props) {
                     <div key={index} className="flex justify-between items-center p-3 rounded-md bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 overflow-hidden">
                         <div className="flex items-center">
                             <div className="relative inline-block">
-                                <img src={item.avatar ? item.avatar : `/avatar/${Math.ceil(Math.random() * 7 + 1)}.jpg`} className="h-16 rounded-md" alt="" />
+                                <img src={item.avatar ?? `/avatar/${Math.ceil(Math.random() * 7 + 1)}.jpg`} className="h-16 rounded-md" alt="" />
                                 <i className="mdi mdi-check-decagram text-emerald-600 text-lg absolute -top-2 -end-2"></i>
                             </div>
 

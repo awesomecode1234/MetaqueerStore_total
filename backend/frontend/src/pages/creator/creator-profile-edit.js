@@ -25,6 +25,7 @@ export default function CreatorProfileEdit() {
         //description: '',
         art_name: ''
     });
+    console.log(userData);
     const [phoneError, setPhoneError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
@@ -45,7 +46,6 @@ export default function CreatorProfileEdit() {
         } else {
             setImageSrc(`/avatar/1.jpg`); 
         }
-
     }, [userData, getUserAvatar, setImageSrc, setFormData]);
 
     const debouncedCheckArtNameExists = useCallback(
@@ -131,8 +131,11 @@ export default function CreatorProfileEdit() {
     };
 
     const handleSaveUserData = async (formData) => {
-
         try {
+            if (!userData || !userData.jwt_data || !userData.address){
+                setErrorMessage('Failed to update profile. Please try again.');
+                return;
+            }
             const saved = await saveUserData(userData.jwt_data, userData.address, formData);
 
             if (saved) {

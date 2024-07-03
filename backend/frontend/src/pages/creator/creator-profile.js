@@ -21,15 +21,15 @@ export default function CreatorProfile() {
     };
 
     useEffect(() => {
-       
+        console.log("abadc");
         const fetchData = async () => {
 
             if (!initialized.current) {
                 setNoDetails(false);
                 initialized.current = true;
-                const result = await getUserDetails(id);
+                const result = (await getUserDetails(id))?? {address: id, sid: id, art_name: 'unnamed'};
                 result.avatar = getUserAvatar(result);
-                
+                console.log(result);
                 if (result) {
                     result.addresses = [id];
                     setUserDetails(result);
@@ -67,7 +67,7 @@ export default function CreatorProfile() {
                                         {/*<input id="pro-img" name="profile-image" type="file" className="hidden" onChange={loadFile} />*/}
                                         <div>
                                             <div className="relative h-28 w-28 mx-auto rounded-full shadow dark:shadow-gray-800 ring-4 ring-slate-50 dark:ring-slate-800 overflow-hidden">
-                                                <img src={userDetails.avatar} className="rounded-full" id="profile-image" alt="" />
+                                                <img src={userDetails.avatar?? `/avatar/${Math.ceil(Math.random() * 7 + 1)}`} className="rounded-full" id="profile-image" alt="" />
                                                 <div className="absolute inset-0 group-hover:bg-slate-900/40 transition duration-500"></div>
                                                 <label className="absolute inset-0 cursor-pointer" htmlFor="pro-img"></label>
                                             </div>
@@ -75,7 +75,7 @@ export default function CreatorProfile() {
                                     </div>
 
                                     <div className="mt-6">
-                                        <h5 className="text-xl font-semibold">{userDetails.art_name} {/*<i className="mdi mdi-check-decagram text-emerald-600 align-middle text-lg"></i>*/}</h5>
+                                        <h5 className="text-xl font-semibold">{userDetails.art_name??'unnamed'} {/*<i className="mdi mdi-check-decagram text-emerald-600 align-middle text-lg"></i>*/}</h5>
                                         {/* <p className="text-slate-400 text-[16px] mt-1">Created by <Link to="/" className="text-violet-600 font-semibold">1x5484dcdvcdscds56c4</Link></p>
 
                                         <div className="mt-4">
@@ -83,11 +83,13 @@ export default function CreatorProfile() {
                                             <Link to="#" className="btn btn-icon btn-sm rounded-full bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white mx-1"><i className="mdi mdi-account-plus"></i></Link>
                                             <Link to="/creator-profile-edit" className="btn btn-icon btn-sm rounded-full bg-violet-600/5 hover:bg-violet-600 border-violet-600/10 hover:border-violet-600 text-violet-600 hover:text-white mx-1"><i className="mdi mdi-cog"></i></Link>
                                         </div>*/}
+                                        <h5 className='mt-4 content-center'>Address: {userDetails.address}</h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <ItemsGrid addresses={userDetails.addresses} />
+                        
+                        {/* <ItemsGrid addresses={userDetails.addresses} /> */}
                     </section>
                 ) : null}
 

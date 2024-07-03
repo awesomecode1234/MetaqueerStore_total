@@ -98,7 +98,7 @@ function App()
             <Route path='/blog-detail/:id' element={<BlogDetail />} />
 
             <Route path={urls.become_creator} element={<BecomeCreator />} />
-            <Route path={urls.creator_profile_id} element={<CreatorProfile />} />
+            <Route path='/creator-profile/:id' element={<CreatorProfile />} />
             <Route exact path={urls.creator_profile_edit} element={<ProtectedRoute/>}>
               <Route exact path={urls.creator_profile_edit} element={<CreatorProfileEdit/>}/>
             </Route>

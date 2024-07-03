@@ -407,8 +407,8 @@ export default function Navbar()
                     <div id="navigation" className={`${isOpen === true ? 'hidden' : 'block'}`}>
                         <ul className="navigation-menu justify-end">
                             <li><Link to={urls.home} className="sub-menu-item">Home</Link></li>
-                            <li><Link to={urls.sale} className="sub-menu-item">Sale</Link></li>
-                            <li><Link to={urls.auction} className="sub-menu-item">Auction</Link></li>
+                            {/* <li><Link to={urls.sale} className="sub-menu-item">Sale</Link></li> */}
+                            <li><Link to={urls.auction} className="sub-menu-item">Live Auction</Link></li> 
                             {/*<li className="has-submenu parent-parent-menu-item">
                                 <Link to="#">Explore</Link><span className="menu-arrow"></span>
                                 <ul className="submenu">
