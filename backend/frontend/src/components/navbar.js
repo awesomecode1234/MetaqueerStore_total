@@ -408,10 +408,39 @@ export default function Navbar()
                         <ul className="navigation-menu justify-end">
                             <li><Link to={urls.home} className="sub-menu-item">Home</Link></li>
                             {/* <li><Link to={urls.sale} className="sub-menu-item">Sale</Link></li> */}
-                            <li><Link to="/explore-one" className="sub-menu-item">Explore</Link></li> 
-                            <li><Link to={urls.auction} className="sub-menu-item">Live Auction</Link></li> 
-                            
-                            
+                            <li className="has-submenu parent-parent-menu-item"><Link to="#">Explore</Link><span className="menu-arrow"></span>
+                                <ul className="submenu">
+
+                                    <li><Link to="/explore-one" className="sub-menu-item">Explore Items</Link></li> 
+                                    <li><Link to={urls.auction} className="sub-menu-item">Live Auction</Link></li> 
+                                    <li><Link to={urls.sale} className="sub-menu-item">NFTs on Sale</Link></li> 
+                                    
+                                </ul>
+                            </li>
+                            <li className="has-submenu parent-parent-menu-item">
+                                <Link to="#">Pages</Link><span className="menu-arrow"></span>
+                                <ul className="submenu">
+                                    <li><Link to={urls.aboutus} className="sub-menu-item">About Us</Link></li>
+                                    <li><Link to={urls.contact} className="sub-menu-item">Contact</Link></li> 
+                                    <li className="has-submenu parent-menu-item"><Link to="#"> About </Link><span className="submenu-arrow"></span>
+                                        <ul className="submenu">
+                                        <li><Link to={urls.coming_soon} className="sub-menu-item"> Coming Soon</Link></li>
+                                        <li><Link to={urls.maintenance} className="sub-menu-item"> Maintenance</Link></li>
+                                        <li><Link to={urls.thankyou} className="sub-menu-item"> Thank you</Link></li>                                   
+                                        </ul>
+                                    </li>
+                                    <li className="has-submenu parent-menu-item"><Link to="#"> Help Center </Link><span className="submenu-arrow"></span>
+                                        <ul className="submenu">
+                                            <li><Link to={urls.helpcenterOverview} className="sub-menu-item"> Overview</Link></li>
+                                            <li><Link to={urls.helpcenterFaqs} className="sub-menu-item"> FAQs</Link></li>
+                                            <li><Link to={urls.helpcenterGuides} className="sub-menu-item"> Guides</Link></li>
+                                            <li><Link to={urls.helpcenterSupport} className="sub-menu-item"> Support</Link></li>
+                                        </ul>
+                                    </li>
+                                    <li><Link to={urls.terms} className="sub-menu-item">Terms Policy</Link></li>
+                                    <li><Link to={urls.privacy} className="sub-menu-item">Privacy Policy</Link></li>
+                                </ul>
+                            </li>
                             {/*<li className="has-submenu parent-parent-menu-item">
                                 <Link to="#">Explore</Link><span className="menu-arrow"></span>
                                 <ul className="submenu">
@@ -482,7 +511,7 @@ export default function Navbar()
                                 <li><Link to={urls.become_creator} className="sub-menu-item">Become Creator</Link></li>
                             )}
                             {/*<li><Link to={urls.user_nfts} className="sub-menu-item">My NFT</Link></li>*/}
-                            <li className="has-submenu parent-parent-menu-item">
+                            {/* <li className="has-submenu parent-parent-menu-item">
                                 <Link to="#">Help Center</Link><span className="menu-arrow"></span>
                                 <ul className="submenu">
                                     <li><Link to={urls.helpcenterOverview} className="sub-menu-item"> Overview</Link></li>
@@ -499,11 +528,11 @@ export default function Navbar()
                                 <ul className="submenu">
                                     <li><Link to={urls.aboutus} className="sub-menu-item">About US</Link></li>
                                     <li><Link to={urls.contact} className="sub-menu-item">Contact</Link></li> 
-                                    <li><Link to="/comingsoon" className="sub-menu-item"> Coming Soon</Link></li>
-                                    <li><Link to="/maintenance" className="sub-menu-item"> Maintenance</Link></li>
-                                    <li><Link to="/thankyou" className="sub-menu-item"> Thank you</Link></li>
+                                    <li><Link to={urls.coming_soon} className="sub-menu-item"> Coming Soon</Link></li>
+                                    <li><Link to={urls.maintenance} className="sub-menu-item"> Maintenance</Link></li>
+                                    <li><Link to={urls.thankyou} className="sub-menu-item"> Thank you</Link></li>
                                 </ul>
-                            </li>
+                            </li> */}
                             
                     </ul>
                 </div>
