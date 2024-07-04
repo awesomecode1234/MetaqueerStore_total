@@ -21,7 +21,7 @@ import Error from './pages/special/error';
 import Thankyou from './pages/special/thankyou';
 import Terms from './pages/terms';
 // import Support from './pages/helpcenter/support';
-// import Guides from './pages/helpcenter/guides';
+import Guides from './pages/helpcenter/guides';
 import ItemDetail from './pages/explore/item-detail';
 //import IndexTwo from './pages/index/index-two';
 //import IndexTen from './pages/index/index-ten';
@@ -40,10 +40,12 @@ import Wallet from './pages/wallet';
 import UploadWork from './pages/explore/upload-work';
 import UserNFTs from './pages/explore/usernfts';
 import HelpcenterFaqs from './pages/helpcenter/helpcenter-faqs';
+import Support from './pages/helpcenter/support';
 import PrivacyPolicy from './pages/privacy-policy';
 import LockScreen from './pages/auth/lock-screen';
 import HelpcenterOverview from './pages/helpcenter/helpcenter-overview';
 import ScrollToTop from './components/scroll-top';
+
 // import ExploreTwo from './pages/explore/explore-two';
 // import ExploreThree from './pages/explore/explore-three';
 import NotFound from './pages/special/error';
@@ -78,6 +80,10 @@ function App()
             <Route exact path={urls.upload_work} element={<ProtectedRoute/>}>
               <Route exact path={urls.upload_work} element={<UploadWork/>}/>
             </Route>
+            <Route path={urls.helpcenterGuides} element={<Guides />} />
+            <Route path={urls.helpcenterFaqs} element={<HelpcenterFaqs />} />
+            <Route path={urls.helpcenterOverview} element={<HelpcenterOverview />} />
+            <Route path ={urls.helpcenterSupport} element={<Support />} />
             <Route path={urls.item_detail} element={<ItemDetail />} />
             <Route path={urls.item_detail_id} element={<ItemDetail />} />
             <Route path={urls.privacy} element={<PrivacyPolicy />} />
@@ -108,7 +114,7 @@ function App()
             <Route path={urls.creators} element={<Creators />} />
             <Route path={urls.aboutus} element={<About />} />
             <Route path={urls.contact} element={<Contact />} />
-            {/* <Route path="*" element={<NotFound />} /> */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </NFTMarketplaceContextProvider>
       </UserProvider>

@@ -6,6 +6,7 @@ import Footer from '../../components/footer';
 import { useParams } from 'react-router-dom';
 import ItemsGrid from '../../components/items-grid';
 import UserContext from '../../contexts/UserContext';
+import DiscoverItems from '../../components/discover-items';
 
 export default function CreatorProfile() {
     const params = useParams();
@@ -84,6 +85,7 @@ export default function CreatorProfile() {
                                             <Link to="/creator-profile-edit" className="btn btn-icon btn-sm rounded-full bg-violet-600/5 hover:bg-violet-600 border-violet-600/10 hover:border-violet-600 text-violet-600 hover:text-white mx-1"><i className="mdi mdi-cog"></i></Link>
                                         </div>*/}
                                         <h5 className='mt-4 content-center'>Address: {userDetails.address}</h5>
+                                        <DiscoverItems allData={true} pagination={true} showAuction={true} showSale={true} title={'My NFTs on Sale or Auction'} seller ={userDetails.address}/>
                                     </div>
                                 </div>
                             </div>

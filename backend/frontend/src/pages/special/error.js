@@ -21,7 +21,7 @@ export default function Error() {
                                     <p className="text-slate-400">Whoops, this is embarassing. <br /> Looks like the page you were looking for wasn't found.</p>
 
                                     <div className="mt-6">
-                                        <Link to="/index" className="btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white rounded-full">Back to Home</Link>
+                                        <Link to="/" className="btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white rounded-full">Back to Home</Link>
                                     </div>
                                 </div>
                             </div>
@@ -32,7 +32,6 @@ export default function Error() {
                     </div>
                 </div>
             </section>
-            <Switcher />
         </>
     )
 }

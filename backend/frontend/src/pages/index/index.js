@@ -7,6 +7,8 @@ import QA from '../../components/qa';
 import GetTouch from '../../components/get-touch';
 import Footer from '../../components/footer';
 import Navbar from '../../components/navbar';
+import Thankyou from '../special/thankyou';
+import Comingsoon from '../special/comingsoon';
 //import Switcher from '../../components/switcher';
 
 export default function Index() {

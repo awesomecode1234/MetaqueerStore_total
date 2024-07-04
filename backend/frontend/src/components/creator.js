@@ -76,8 +76,7 @@ export default function Creator(props) {
                                     {item.art_name}
                                     <br />
                                     {item.address}
-                                </Link>
-                                <Link to={`/user-nfts/${item.address}`} className="font-semibold block hover:text-violet-600">
+                                    <br/>
                                     Selling Items: {item.itemCount}
                                 </Link>
                             </div>

@@ -1,3 +1,6 @@
+import HelpcenterFaqs from "../pages/helpcenter/helpcenter-faqs";
+import HelpcenterOverview from "../pages/helpcenter/helpcenter-overview";
+
 const urls = {
     home: '/',
     aboutus: '/aboutus',
@@ -9,6 +12,10 @@ const urls = {
     products: '/products',
     coming_soon: '/comingsoon',
     maintenance: '/maintenance',
+    helpcenterFaqs: '/helpcenter_faqs',
+    helpcenterOverview: '/helpcenter_overview',
+    helpcenterGuides: '/helpcenter_guides',
+    helpcenterSupport: '/helpcenter_support',
     thankyou: '/thankyou',
     error: '/error',
     upload_work: '/upload-work',

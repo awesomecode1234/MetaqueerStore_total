@@ -77,7 +77,6 @@ export default function Comingsoon() {
                     </div>
                 </div>
             </section>
-            <Switcher />
         </>
     )
 }
