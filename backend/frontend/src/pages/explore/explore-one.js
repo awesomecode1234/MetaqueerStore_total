@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Navbar from '../../components/navbar'
 import Footer from '../../components/footer'
 import Select from 'react-select'
 import DiscoverItems from '../../components/discover-items';
+import { useNFTMarketplace } from '../../contexts/NFTMarketplaceContext';
 //import Switcher from '../../components/switcher';
 import {LuClock, LuSearch, AiOutlineAppstore, AiOutlineStar} from "../../assets/icons/vander"
 
@@ -29,28 +30,28 @@ export default function ExploreOne() {
     const [showSale, setShowSale] = useState(true);
     const [showAuction, setShowAuction] = useState(true);
     const [searchString, setSearchString] = useState('');
-    
+    const { getMarketItems } = useNFTMarketplace();
     const onSelectDataHandler = (selectedoption) => {
         
         switch (selectedoption.value) {
             case "Image":
-            setDataType("image/*");
-            break;
+                setDataType("image/*");
+                break;
             case "GIFs":
-            setDataType("image/gif");
-            break;
+                setDataType("image/gif");
+                break;
             case "Audio":
-            setDataType("audio/*"); // using 'audio' for music
-            break;
+                setDataType("audio/*"); // using 'audio' for music
+                break;
             case "Video":
-            setDataType("video/*");
-            break;
+                setDataType("video/*");
+                break;
             case "All":
-            setDataType("");
-            break;
+                setDataType("");
+                break;
             default:
-            setDataType("");
-            break;
+                setDataType("");
+                break;
         }
     };
 
@@ -78,6 +79,7 @@ export default function ExploreOne() {
     
     useEffect(() => {
         document.documentElement.classList.add('dark');
+        getMarketItems();
     }, []);
     return (
         <>

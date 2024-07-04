@@ -5,10 +5,12 @@ import Footer from '../../components/footer';
 import Switcher from '../../components/switcher';
 import { Link } from 'react-router-dom';
 import DiscoverItems from '../../components/discover-items';
-
+import { useNFTMarketplace } from '../../contexts/NFTMarketplaceContext';
 export default function Sale() {
+    const {getMarketItems} = useNFTMarketplace();
     useEffect(() => {
         document.documentElement.classList.add('dark');
+        getMarketItems();
     }, []);
     return (
         <>

@@ -13,7 +13,10 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
     const [tokenDataList, setTokenDataList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalItemCount, setTotalItemCount] = useState(0);
-
+    function  bigIntReplacer(key, value) {
+        return typeof value === 'bigint' ? value.toString() : value;
+    }
+    
     useEffect(() => {
         const resizeItems = () => {
             const items = document.querySelectorAll('.group.relative');
@@ -106,8 +109,8 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                 try{
                     if ((item.isAuction && showAuction)||(!item.isAuction && showSale)) 
                         if((!dataType)||(item.itemType === dataType))
-                            if ((!seller)||(item.seller.toUpperCase() === seller.toUpperCase()))                                
-                                if ((!searchString) || (JSON.stringify(item).includes(searchString)))
+                            // if ((!seller)||(item.seller.toUpperCase() === seller.toUpperCase()))                                
+                                if ((!searchString) || (JSON.stringify(item, bigIntReplacer).includes(searchString)))
                                     return true;
                     return false;
                 }
