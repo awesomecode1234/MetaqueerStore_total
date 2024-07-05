@@ -414,8 +414,10 @@ export default function Navbar()
                                     <li><Link to="/explore-one" className="sub-menu-item">Explore Items</Link></li> 
                                     <li><Link to={urls.auction} className="sub-menu-item">Live Auction</Link></li> 
                                     <li><Link to={urls.sale} className="sub-menu-item">NFTs on Sale</Link></li> 
-                                    <li><Link to='/activity' className="sub-menu-item">Activities</Link></li> 
-                                    <li><Link to='/collections' className="sub-menu-item">Collections</Link></li> 
+                                    <li><Link to={urls.coming_soon} className="sub-menu-item">Activities</Link></li> 
+                                    <li><Link to='/comingsoon' className="sub-menu-item">Collections</Link></li>
+                                    {/* <li><Link to='/activity' className="sub-menu-item">Activities</Link></li> 
+                                    <li><Link to='/collections' className="sub-menu-item">Collections</Link></li>  */}
                                     {account ? (
                                 
                                     <li><Link to={urls.upload_work} className="sub-menu-item">Upload Works</Link></li>
