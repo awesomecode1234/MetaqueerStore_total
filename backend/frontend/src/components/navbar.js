@@ -414,7 +414,15 @@ export default function Navbar()
                                     <li><Link to="/explore-one" className="sub-menu-item">Explore Items</Link></li> 
                                     <li><Link to={urls.auction} className="sub-menu-item">Live Auction</Link></li> 
                                     <li><Link to={urls.sale} className="sub-menu-item">NFTs on Sale</Link></li> 
-                                    
+                                    <li><Link to='/activity' className="sub-menu-item">Activities</Link></li> 
+                                    <li><Link to='/collections' className="sub-menu-item">Collections</Link></li> 
+                                    {account ? (
+                                
+                                    <li><Link to={urls.upload_work} className="sub-menu-item">Upload Works</Link></li>
+            
+                                    ) : (
+                                    <li><Link to={urls.become_creator} className="sub-menu-item">Upload Works</Link></li>
+                                    )}
                                 </ul>
                             </li>
                             <li className="has-submenu parent-parent-menu-item">
@@ -500,7 +508,7 @@ export default function Navbar()
                                 </ul>
                             </li>*/}
                         
-                            {account ? (
+                            {/* {account ? (
                                 <>
                                 <li>
                                     <Link to={`/user-nfts/${account}`}className="sub-menu-item">My NFT</Link>
@@ -509,7 +517,7 @@ export default function Navbar()
                                 </>
                             ) : (
                                 <li><Link to={urls.become_creator} className="sub-menu-item">Become Creator</Link></li>
-                            )}
+                            )} */}
                             {/*<li><Link to={urls.user_nfts} className="sub-menu-item">My NFT</Link></li>*/}
                             {/* <li className="has-submenu parent-parent-menu-item">
                                 <Link to="#">Help Center</Link><span className="menu-arrow"></span>

@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import { FaTable, ImTab, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdOutlineArrowForward } from "../assets/icons/vander";
 import { useNFTMarketplace } from '../contexts/NFTMarketplaceContext';
-import { forEach } from 'lodash';
+import { filter, forEach } from 'lodash';
 import { BotanixTestnet } from '@particle-network/chains';
 import LazyLoad from 'react-lazyload';
+import {ethers} from 'ethers';
 
-
-export default function DiscoverItems({ title, showAuction, showSale, pagination, dataType, searchString, seller, itemCountPerPage=4 }) {
+export default function DiscoverItems({ title, showAuction, showSale, pagination, dataType, searchString, seller, itemCountPerPage=4, rate=true }) {
     const { formatPrice, getMarketItems, fromUnixTimestamp, marketItemList  } = useNFTMarketplace();
     const [tokenDataList, setTokenDataList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -16,6 +16,16 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
     function  bigIntReplacer(key, value) {
         return typeof value === 'bigint' ? value.toString() : value;
     }
+    
+    const convertPrice = (price) => {
+        try {
+            let etherValue = ethers.utils.formatEther(price);
+            return parseFloat(etherValue); // Convert to number for comparison
+        } catch (error) {
+            console.error(error);
+            return NaN; // Return NaN in case of error for safety
+        }
+    };
     
     useEffect(() => {
         const resizeItems = () => {
@@ -69,6 +79,8 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
         if (!tokenItems || !Array.isArray(tokenItems) || !tokenItems.length) {
             return [];
         }
+        
+
         let arr = [];
         for (let item of tokenItems) {
             try {
@@ -105,11 +117,12 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                 setTokenDataList([]);
                 return;
             }
-            const filteredArray =  marketItemList.filter(item => {
+            const fetchedItems = await fetchSmartContractMarketItem(marketItemList);
+            const filteredArray =  fetchedItems.filter(item => {
                 try{
                     if ((item.isAuction && showAuction)||(!item.isAuction && showSale)) 
-                        if((!dataType)||(item.itemType === dataType))
-                            // if ((!seller)||(item.seller.toUpperCase() === seller.toUpperCase()))                                
+                        if((!dataType)||(item.dataType === dataType))
+                            if ((!seller)||(item.seller.toUpperCase() === seller.toUpperCase()))                                
                                 if ((!searchString) || (JSON.stringify(item, bigIntReplacer).includes(searchString)))
                                     return true;
                     return false;
@@ -121,13 +134,18 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                 }
             }
             );
-            const fetchedItems = await fetchSmartContractMarketItem(filteredArray);
-            setTotalItemCount(fetchedItems.length);
-            const currentPageItems = fetchedItems.slice((currentPage-1)*itemCountPerPage, Math.min(currentPage*itemCountPerPage, fetchedItems.length)); 
+        
+            if(rate)
+                filteredArray.sort((a, b) => convertPrice(b.price)  - convertPrice(a.price));
+            else
+                filteredArray.sort((a, b) => convertPrice(a.price)  - convertPrice(b.price));
+
+            setTotalItemCount(filteredArray.length);
+            const currentPageItems = filteredArray.slice((currentPage-1)*itemCountPerPage, Math.min(currentPage*itemCountPerPage, fetchedItems.length)); 
             setTokenDataList(currentPageItems);
         };
         loadMarketItemList();
-    }, [marketItemList, showAuction, showSale, currentPage, dataType, searchString]);
+    }, [marketItemList, showAuction, showSale, currentPage, dataType, searchString, rate]);
     
     return (
         <>

@@ -30,7 +30,9 @@ export default function ExploreOne() {
     const [showSale, setShowSale] = useState(true);
     const [showAuction, setShowAuction] = useState(true);
     const [searchString, setSearchString] = useState('');
+    const [rate, setRate] = useState(true);
     const { getMarketItems } = useNFTMarketplace();
+    
     const onSelectDataHandler = (selectedoption) => {
         
         switch (selectedoption.value) {
@@ -55,6 +57,20 @@ export default function ExploreOne() {
         }
     };
 
+    const onSelectRateHandler = (selectedOption) => { 
+        switch (selectedOption.value) {
+                case "top":
+                    setRate(true);
+                    break;
+                case "low":
+                    setRate(false);
+                    break;
+                default: 
+                    setRate(true);
+                    break;        
+            }
+    };
+    
     const onSelectBuyHandler = (selectedOption) => { 
         switch (selectedOption.value) {
                 case "Sales":
@@ -75,7 +91,7 @@ export default function ExploreOne() {
                     break;        
             }
     };
-    
+
     
     useEffect(() => {
         document.documentElement.classList.add('dark');
@@ -142,6 +158,7 @@ export default function ExploreOne() {
                                         <div className="filter-search-form relative mt-2">
                                             <AiOutlineStar className="icons"/>
                                             <Select className="form-input z-2 filter-input-box bg-gray-50 dark:bg-slate-800 border-0" options={rateOptions} 
+                                             onChange={onSelectRateHandler} 
                                             />
 
                                         </div>
@@ -151,7 +168,7 @@ export default function ExploreOne() {
                         </form>
                     </div>
                 </div>
-                <DiscoverItems title={'ALL MarketItems'} pagination={true} showAuction={showAuction} showSale = {showSale} dataType={dataType} searchString={searchString}/>
+                <DiscoverItems title={'ALL MarketItems'} pagination={true} showAuction={showAuction} showSale = {showSale} dataType={dataType} searchString={searchString} rate ={rate}/>
             </section>
             <Footer />
             {/* <Switcher /> */}

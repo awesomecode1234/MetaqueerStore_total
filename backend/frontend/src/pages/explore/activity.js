@@ -6,8 +6,8 @@ import image3 from '../../assets/images/items/3.jpg';
 import image4 from '../../assets/images/items/2.gif';
 import image5 from '../../assets/images/items/4.jpg';
 import image6 from '../../assets/images/items/3.gif';
-import Navbar from '../../components/navbar'
-import Footer from '../../components/footer'
+import Navbar from '../../components/navbar';
+import Footer from '../../components/footer';
 import Switcher from '../../components/switcher';
 import { Link } from 'react-router-dom';
 import {LuSearch, PiWalletBold, BsTag, PiFireSimpleBold, FiHeart, PiBrowsersLight,FiUsers,VscListFlat, PiMusicNotesBold, LuCamera,FaRegPaperPlane} from "../../assets/icons/vander"
@@ -26,13 +26,6 @@ export default function Activity() {
                         <h3 className="md:text-3xl text-2xl md:leading-snug tracking-wide leading-snug font-medium text-white">Activities</h3>
 
                     </div>
-                </div>
-
-                <div className="absolute text-center z-10 bottom-5 start-0 end-0 mx-3">
-                    <ul className="breadcrumb tracking-[0.5px] breadcrumb-light mb-0 inline-block">
-                        <li className="inline breadcrumb-item text-[15px] font-semibold duration-500 ease-in-out text-white/50 hover:text-white"><Link to="/">Giglink</Link></li>
-                        <li className="inline breadcrumb-item text-[15px] font-semibold duration-500 ease-in-out text-white" aria-current="page">Activity</li>
-                    </ul>
                 </div>
             </section>
             <div className="relative">
