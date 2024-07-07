@@ -86,7 +86,7 @@ export default function ListNFT() {
                     <Circles color="#00BFFF" height={80} width={80} />
                 </div>
                 <Footer />
-                <Switcher />
+                {/* <Switcher /> */}
             </>
         );
     }
@@ -112,7 +112,7 @@ export default function ListNFT() {
             </section>
 
 			<Footer />
-			<Switcher />
+			{/* <Switcher /> */}
 		</>
 	);
 }

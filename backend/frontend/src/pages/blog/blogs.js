@@ -98,7 +98,7 @@ export default function Blogs() {
 
             </section >
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

@@ -61,7 +61,7 @@ export default function Maintenance() {
                     </div>
                 </div>
             </section>
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

@@ -7,6 +7,7 @@ import { filter, forEach } from 'lodash';
 import { BotanixTestnet } from '@particle-network/chains';
 import LazyLoad from 'react-lazyload';
 import {ethers} from 'ethers';
+import misc from '../constants/misc';
 
 export default function DiscoverItems({ title, showAuction, showSale, pagination, dataType, searchString, seller, itemCountPerPage=4, rate=true }) {
     const { formatPrice, getMarketItems, fromUnixTimestamp, marketItemList  } = useNFTMarketplace();
@@ -199,7 +200,7 @@ export default function DiscoverItems({ title, showAuction, showSale, pagination
                                     </Link>
                                 </div>
                                 <div className="flex justify-between p-2 bg-gray-50 dark:bg-slate-800 rounded-lg shadow dark:shadow-gray-700">
-                                    <span className="text-[14px] font-semibold block">{item.isAuction? 'Highest Bid': 'Price'}<br></br><i className="mdi mdi-ethereum"></i> {formatPrice(item.price)} ETH</span>
+                                    <span className="text-[14px] font-semibold block">{item.isAuction? 'Highest Bid': 'Price'}<br></br><i className="mdi mdi-ethereum"></i> {formatPrice(item.price)} {misc.currency}</span>
                                 </div>
                             </div>
                         </div>

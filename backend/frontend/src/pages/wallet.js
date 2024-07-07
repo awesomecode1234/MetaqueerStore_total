@@ -111,7 +111,7 @@ export default function Wallet() {
                 </div>
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

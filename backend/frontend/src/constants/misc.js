@@ -1,5 +1,5 @@
 const misc = {
-    currency: 'ETH',
+    currency: 'MATIC',
     wallet_signature_text: "Authentication request: some message goes here"
 };
 

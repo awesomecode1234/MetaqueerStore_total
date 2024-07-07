@@ -125,7 +125,7 @@ export default function Guides() {
             </section>
 
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

@@ -73,7 +73,7 @@ export default function PrivacyPolicy() {
             </section>
 
             <Footer />
-            <Switcher />
+           
         </>
     )
 }

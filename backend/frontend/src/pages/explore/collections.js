@@ -40,7 +40,7 @@ export default function Collections() {
                 <CollectionTwo pagination={true}/>
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

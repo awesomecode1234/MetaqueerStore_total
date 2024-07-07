@@ -221,7 +221,7 @@ export default function HelpcenterFaqs() {
                 </div>
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

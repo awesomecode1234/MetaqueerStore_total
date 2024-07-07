@@ -39,7 +39,7 @@ export default function LockScreen() {
                     </div>
                 </div>
             </section>
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

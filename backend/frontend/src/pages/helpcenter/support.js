@@ -151,7 +151,7 @@ export default function Support() {
             </section>
 
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

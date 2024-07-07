@@ -43,7 +43,7 @@ export default function ResetPassword() {
                     </div>
                 </div>
             </section>
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

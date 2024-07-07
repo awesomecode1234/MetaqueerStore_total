@@ -47,7 +47,7 @@ export default function UserNFTs() {
                 {/* <AuctionsTwo pagination={true} allData={true}/> */}
             </section>
             <Footer />
-            <Switcher />
+            {/* <Switcher /> */}
         </>
     )
 }

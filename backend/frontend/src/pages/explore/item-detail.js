@@ -532,7 +532,7 @@ export default function ItemDetail() {
                           <div className="flex justify-between">
                             <p className="font-semibold text-sm"> Price:</p>
                             <p className="text-sm text-violet-600 font-semibold">
-                              {marketItem.etherPrice}ETH{" "}
+                              {marketItem.etherPrice}{misc.currency}{" "}
                             </p>
                           </div>
                         </div>
@@ -599,7 +599,7 @@ export default function ItemDetail() {
                               </div>
                               <div>
                               <label>
-                                {marketItem.isAuction? 'Set Minimum Bid Number (Eth)': 'Set Price (Eth)'}
+                                {marketItem.isAuction? `Set Minimum Bid Number (${misc.currency})`: `Set Price (${misc.currency})`}
                                 <input
                                     name="etherium"
                                     id="number"
@@ -609,7 +609,7 @@ export default function ItemDetail() {
                                     }
                                     value={currentValue} 
                                     className="form-input w-full text-[15px] py-2 px-3 h-10 bg-transparent dark:bg-slate-900 dark:text-slate-200 rounded-full outline-none border border-gray-200 focus:border-violet-600 dark:border-gray-800 dark:focus:border-violet-600 focus:ring-0 mt-3"
-                                    placeholder={`${marketItem.etherPrice}ETH`}
+                                    placeholder={`${marketItem.etherPrice} ${misc.currency}`}
                                 />
                               </label>
                               </div>
@@ -667,7 +667,7 @@ export default function ItemDetail() {
         </div>
       </section>
       <Footer />
-      <Switcher />
+      {/* <Switcher /> */}
     </>
   );
 }
