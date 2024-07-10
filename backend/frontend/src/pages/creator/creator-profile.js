@@ -73,7 +73,7 @@ export default function CreatorProfile() {
                                     </div>
 
                                     <div className="mt-6">
-                                        <h5 className="text-xl font-semibold">{userDetails?.art_name??'unnamed'} {/*<i className="mdi mdi-check-decagram text-emerald-600 align-middle text-lg"></i>*/}</h5>
+                                        <h5 className="text-xl font-semibold">User Profile {/*<i className="mdi mdi-check-decagram text-emerald-600 align-middle text-lg"></i>*/}</h5>
                                         {/* <p className="text-slate-400 text-[16px] mt-1">Created by <Link to="/" className="text-violet-600 font-semibold">1x5484dcdvcdscds56c4</Link></p>
 
                                         <div className="mt-4">
@@ -81,6 +81,9 @@ export default function CreatorProfile() {
                                             <Link to="#" className="btn btn-icon btn-sm rounded-full bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white mx-1"><i className="mdi mdi-account-plus"></i></Link>
                                             <Link to="/creator-profile-edit" className="btn btn-icon btn-sm rounded-full bg-violet-600/5 hover:bg-violet-600 border-violet-600/10 hover:border-violet-600 text-violet-600 hover:text-white mx-1"><i className="mdi mdi-cog"></i></Link>
                                         </div>*/}
+                                        { userDetails?.art_name &&
+                                            <h5 className='mt-4 content-center'> {userDetails?.art_name} </h5>
+                                        }
                                         <h5 className='mt-4 content-center'>Address: {id}</h5>
                                         <DiscoverItems allData={true} pagination={true} showAuction={true} showSale={true} title={'My NFTs on Sale or Auction'} seller ={id}/>
                                     </div>

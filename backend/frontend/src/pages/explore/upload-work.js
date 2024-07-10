@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react'
 import Navbar from '../../components/navbar'
 import Footer from '../../components/footer'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Circles } from 'react-loader-spinner';
 import urls from '../../constants/urls';
 import { AiOutlineDashboard, PiBrowsers } from "../../assets/icons/vander"
@@ -13,6 +13,7 @@ import { useNFTMarketplace } from '../../contexts/NFTMarketplaceContext';
 
 export default function UploadWork() 
 {   
+    const navigate = useNavigate();
     const getCurrentTimestamp = () => {
         const date = new Date();
         return date.toISOString().slice(0, 16).replace('T', ' ');
@@ -83,7 +84,7 @@ export default function UploadWork()
         event.preventDefault();
 
 		if (imageURI === "") {
-			alert("Please upload an image");
+			alert("Please upload data");
 			return false;
 		} else if (title === "") {
 			alert("Please add a title");
@@ -149,7 +150,10 @@ export default function UploadWork()
 	};
 
     useEffect(() => {
+        if(!isUserAuthenticated) navigate('/');
+    }, [isUserAuthenticated]);
 
+    useEffect(() => {
         setFailedMessage('');
         setSuccessMessage('');
         document.documentElement.classList.add('dark');
@@ -281,7 +285,7 @@ export default function UploadWork()
                                                 <li className="navbar-item account-menu text-[16px]">
                                                     <Link to={`/creator-profile/${userData.address}`} className="navbar-link text-slate-400 flex items-center py-2 rounded">
                                                         <span className="me-2 mb-0"><AiOutlineDashboard/></span>
-                                                        <h6 className="mb-0 font-medium">Profile</h6>
+                                                        <h6 className="mb-0 font-medium">User Profile</h6>
                                                     </Link>
                                                 </li>
                                             )}
@@ -316,7 +320,7 @@ export default function UploadWork()
                                         <div className="preview-box flex justify-center rounded-md shadow dark:shadow-gray-800 overflow-hidden bg-gray-50 dark:bg-slate-800 text-slate-400 p-2 text-center small">Supports JPG, PNG and MP4 videos. Max file size : 10MB.</div>
                                         <input type="file" id="input-file" name="input-file" accept={dataType} hidden onChange={handleChange}/>
                                         {loading && <div>Loading...</div>}
-                                        <label className="btn-upload btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white rounded-full w-full mt-6 cursor-pointer" htmlFor="input-file">Upload Image</label>
+                                        <label className="btn-upload btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white rounded-full w-full mt-6 cursor-pointer" htmlFor="input-file">Upload Data</label>
                                     </div>
 
                                     <div className="lg:w-2/3 md:w-full mt-8 lg:mt-0 lg:ms-6">
@@ -371,7 +375,7 @@ export default function UploadWork()
                                                 </div> 
 
                                                 <div className="col-span-12">
-                                                    <button type="submit" onClick={createNFTForm} disabled={loading} className={`btn bg-violet-600 ${loading ? 'disabled' : 'hover:bg-violet-700'} border-violet-600 ${loading ? 'disabled' : 'hover:border-violet-700'} text-white rounded-full`}>{submitting ? 'Submitting...' : 'Create Item'}</button>
+                                                    <button type="submit" onClick={createNFTForm} disabled={loading} className={`btn bg-violet-600 ${loading ? 'disabled' : 'hover:bg-violet-700'} border-violet-600 ${loading ? 'disabled' : 'hover:border-violet-700'} text-white rounded-full`}>{submitting ? 'Submitting...' : 'Mint your NFT'}</button>
                                                     {successMessage && (
                                                         <div style={{ marginTop: '20px' }}>
                                                             <p>NFT created successfully</p> 

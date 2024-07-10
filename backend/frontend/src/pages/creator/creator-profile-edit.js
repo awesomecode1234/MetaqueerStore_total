@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useCallback } from 'react';
 //import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/navbar';
 import Footer from '../../components/footer';
-
+import { useNavigate } from 'react-router-dom';
 import { Circles } from 'react-loader-spinner';
 //import { Link } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext';
@@ -15,6 +15,8 @@ export default function CreatorProfileEdit() {
 
     const MIN_ART_NAME_LENGTH = 5; // Minimum character value
     const MAX_ART_NAME_LENGTH = 30; // Maximum character value
+    const navigate = useNavigate();
+
     //const { userInfo } = useAuthCore();
     const { userData, saveUserData, getUserAvatar, checkUserArtName, isUserAuthenticated } = useContext(UserContext);
     const [formData, setFormData] = useState({
@@ -33,6 +35,7 @@ export default function CreatorProfileEdit() {
     const [avatar, setAvatar] = useState(false);
     const [imageSrc, setImageSrc] = useState(null);
     const connectModal = useConnectModal();
+    const [userName, setUserName] =useState("Unnamed");
 
     useEffect(() => {
 
@@ -86,6 +89,10 @@ export default function CreatorProfileEdit() {
             e.preventDefault();
         }*/
     };
+
+    useEffect(() => {
+        if(!isUserAuthenticated) navigate('/');
+    }, [isUserAuthenticated]);
 
     const handleKeyDown = (e) => {
 
@@ -184,6 +191,7 @@ export default function CreatorProfileEdit() {
                 );
                 const newAvatarUrl = uploadResponse.data.fastUrl || '';
                 formData.avatar = newAvatarUrl;
+                formData.userName = userName;
                 console.log(formData);
             } 
             await handleSaveUserData(formData);
@@ -278,7 +286,7 @@ export default function CreatorProfileEdit() {
                                 </div>
                             </div>
 
-                            <p className="text-slate-400 mt-3">We recommend an image of at least 400X400. GIFs work too.</p>
+                            <p className="text-slate-400 mt-3">Avatar image at least 400X400. GIFs work too.</p>
                         </div>
 
                         <div className="lg:col-span-9 md:col-span-8">
@@ -288,7 +296,7 @@ export default function CreatorProfileEdit() {
                                    <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
                                         <div>
                                             <label className="form-label font-medium">
-                                                Art Name : <span className="text-red-600">*</span>
+                                                User Name : <span className="text-red-600">*</span>
                                             </label>
                                             <input
                                                 type="text"
@@ -297,9 +305,7 @@ export default function CreatorProfileEdit() {
                                                 id="art_name"
                                                 name="art_name"
                                                 value={formData.art_name || ''}
-                                                onChange={handleInputChange}
-                                                onKeyDown={handleKeyDown}
-                                                onMouseDown={handleMouseDown}
+                                                onChange={(e)=> {setUserName(e.target.value);}}
                                                 maxLength={MAX_ART_NAME_LENGTH}
                                             />
                                         </div>

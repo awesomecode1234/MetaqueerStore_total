@@ -70,12 +70,12 @@ export default function Footer() {
                                 </div>
 
                                 <div className="lg:col-span-3 md:col-span-4">
-                                    <h5 className="tracking-[1px] text-lg text-gray-100 font-semibold"> MetaQueer APK </h5>
+                                    {/* <h5 className="tracking-[1px] text-lg text-gray-100 font-semibold"> MetaQueer APK </h5>
 
                                     <ul className="list-none mt-6">
                                         <li className="inline"><img src={app} className="h-9 inline-block" alt="" /></li>
                                         <li className="inline"><img src={playstore} className="h-9 inline-block" alt="" /></li>
-                                    </ul>
+                                    </ul> */}
 
                                     <div className="mt-6">
                                         <h5 className="tracking-[1px] text-lg text-gray-100 font-semibold">Contact Details</h5>
@@ -87,12 +87,12 @@ export default function Footer() {
                                             </div>
                                         </div>
 
-                                        <div className="flex mt-6">
+                                        {/* <div className="flex mt-6">
                                             <Phone className="w-5 h-5 text-violet-600 me-3 mt-1"></Phone>
                                             <div className="">
                                                 <Link to="tel:+152534-468-854" className="text-[16px] text-gray-300 hover:text-gray-400 duration-500 ease-in-out">+152 534-468-854</Link>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>

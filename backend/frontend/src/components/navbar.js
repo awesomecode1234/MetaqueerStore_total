@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import { PiWalletBold, AiOutlineUser, LiaSignOutAltSolid, LuSettings } from "../assets/icons/vander"
-import logo_icon_28 from '../assets/images/logo-icon-28.png';
+import logo_icon_40 from '../assets/images/logo-icon-40.png';
 import logo_dark from '../assets/images/logo-dark.png';
 import logo_white from '../assets/images/logo-white.png';
 import urls from '../constants/urls'
@@ -295,11 +295,12 @@ export default function Navbar()
                 <div className="container">
                     {/* <!-- Logo container--> */}
                     <Link className="logo ps-0" to="/">
-                        <img src={logo_icon_28} className="inline-block sm:hidden" alt="" />
-                        <div className="sm:block hidden">
+                        <img src={logo_white} className="hidden dark:inline-block h-10" alt="" />
+                        {/* <img src={logo_icon_28} className="inline-block sm:hidden" alt="" /> */}
+                        {/* <div className="sm:block hidden">
                             <img src={logo_dark} className="inline-block dark:hidden h-7" alt="" />
                             <img src={logo_white} className="hidden dark:inline-block h-7" alt="" />
-                        </div>
+                        </div> */}
                     </Link>
 
                     <div className="menu-extras">
@@ -384,7 +385,7 @@ export default function Navbar()
                                                         <Link to={`/user-nfts/${account}`} className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><AiOutlineUser className="text-[16px] align-middle me-1"/>My NFT</Link>
                                                     </li>
                                                     <li>
-                                                        <Link to={`${urls.creator_profile}/${account}`} className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><AiOutlineUser className="text-[16px] align-middle me-1"/>My Profile</Link>
+                                                        <Link to={`${urls.creator_profile}/${account}`} className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><AiOutlineUser className="text-[16px] align-middle me-1"/>User Profile</Link>
                                                     </li>
                                                     <li>
                                                         <Link to="/creator-profile-edit" className="inline-flex items-center text-[14px] font-semibold py-1.5 px-4 hover:text-violet-600"><LuSettings className="text-[16px] align-middle me-1"/> Settings</Link>

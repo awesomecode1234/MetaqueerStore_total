@@ -38,34 +38,52 @@ export default function PrivacyPolicy() {
                     <div className="md:flex justify-center">
                         <div className="md:w-3/4">
                             <div className="p-6 bg-white dark:bg-slate-900 shadow dark:shadow-gray-800 rounded-md">
-                                <h5 className="text-xl font-semibold mb-4">Overview:</h5>
-                                <p className="text-slate-400"> At our NFT marketplace, we are committed to protecting the privacy and security of our users' personal information. </p>
-                                <p className="text-slate-400"> This privacy policy explains how we collect, use, and disclose information on our platform.</p>
+                                <h5 className="text-xl font-semibold mb-4">Summary:</h5>
+                                <p className="text-slate-400"> This summary outlines how MetaQueer.Space collects, uses, and protects your personal information. </p>
+                                <p className="text-slate-400"> For full details, please refer to our complete Privacy Policy. </p>
 
-                                <h5 className="text-xl font-semibold mb-4 mt-8"> Information Collection:</h5>
-                                <p className="text-slate-400"> We collect information that you provide to us when you create an account, upload an NFT, make a purchase, or contact us.</p>
-                                <p className="text-slate-400"> This information may include your name, email address, payment information, and other personal details.</p>
+                                <h5 className="text-xl font-semibold mb-4 mt-8"> Information We Collect:</h5>
+                                <p className="text-slate-400"> - When creating an account: Particle Network wallet address, username, email.</p>
+                                <p className="text-slate-400"> - Optional information: Full name, location, social media handles, bio, websites, profile picture</p>
+                                <p className="text-slate-400"> - Usage data and blockchain interactions</p>
+
+                                <h5 className="text-xl font-semibold mb-4 mt-8"> How We Use Your Information:</h5>
+                                <p className="text-slate-400"> - Maintain and improve the Platform </p>
+                                <p className="text-slate-400"> - Provide services and support </p>
+                                <p className="text-slate-400"> - Personalize your experience </p>
+                                <p className="text-slate-400"> - Send updates and promotional information </p>
+                                <p className="text-slate-400"> - Manage IP disputes and security </p>
+
+                                <h5 className="text-xl font-semibold mb-4 mt-8"> Information Sharing:</h5>
                                 
-                                <h5 className="text-xl font-semibold mb-4 mt-8"> Use of Information:</h5>
-                                <p className="text-slate-400"> We use your personal information to provide and improve our services, process transactions, communicate with you, and comply with legal obligations. </p>
-                                <p className="text-slate-400"> We may also use non-personal information, such as website usage data, for analytics purposes.</p>
+                                <ul className="list-none text-slate-400 mt-4"> We do not sell your personal information. We share information with:
 
-                                <ul className="list-none text-slate-400 mt-4"> . Information We Collect:
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Affiliates and partners necessary for our services</li>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Analytics and service providers</li>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Law enforcement when required</li>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Parties involved in copyright disputes (DMCA compliance)</li>
 
-                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/>Digital Marketing Solutions for Tomorrow</li>
-                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/>Our Talented & Experienced Marketing Agency</li>
-                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/>Create your own skin to match your brand</li>
-                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/>Digital Marketing Solutions for Tomorrow</li>
-                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/>Our Talented & Experienced Marketing Agency</li>
-                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/>Create your own skin to match your brand</li>
                                 </ul>
 
-                                <h5 className="text-xl font-semibold mb-4 mt-8">Information Provided Voluntarily :</h5>
-                                <p className="text-slate-400">In the 1960s, the text suddenly became known beyond the professional circle of typesetters and layout designers when it was used for Letraset sheets (adhesive letters on transparent film, popular until the 1980s) Versions of the text were subsequently included in DTP programmes such as PageMaker etc.</p>
+                                <h5 className="text-xl font-semibold mb-4 mt-8">Your Rights :</h5>
+                                
+                                
+                                <ul className="list-none text-slate-400 mt-4"> Depending on your location, you may have rights to:
 
-                                <div className="mt-8">
-                                    <Link to="/" className="btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white rounded-full">Print</Link>
-                                </div>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Access and control your personal information</li>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Request deletion of your data</li>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Data portability</li>
+                                    <li className="flex items-center mt-2"><MdOutlineArrowForward className="text-violet-600 text-base align-middle me-2"/> Non-discrimination (for California residents)</li>
+
+                                </ul>
+
+                                <h5 className="text-xl font-semibold mb-4 mt-8"> Cookies:</h5>
+                                <p className="text-slate-400"> We use cookies to improve your browsing experience. You can opt-out by adjusting your browser settings. </p>
+
+
+                                <h5 className="text-xl font-semibold mb-4 mt-8"> Contact Us:</h5>
+                                <p className="text-slate-400"> For privacy-related inquiries or to exercise your rights, contact us at admin@metaqueer.space. </p>
+
                             </div>
                         </div>
                     </div>

@@ -39,8 +39,18 @@ export default function Index() {
                             <p className="text-slate-400 dark:text-white/70 text-lg max-w-xl mx-auto">We are a huge marketplace dedicated to connecting great artists of all Giglink with their fans and unique token collectors!</p>
 
                             <div className="mt-8">
-                                <Link to="/explore-one" className="btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white rounded-full">Explore now</Link>
+                                <Link to="/explore-one" className="btn bg-violet-600 hover:bg-violet-700 text-white btn-gradient-border rounded-full explore-btn">
+                                    Explore now
+                                </Link>
                             </div>
+
+
+                            {/* <div className="mt-8">
+                                <Link to="/explore-one" className="btn bg-violet-600 hover:bg-violet-700 border-violet-600 hover:border-violet-700 text-white btn-gradient-border rounded-full">
+                                    Explore now
+                                </Link>
+                            </div> */}
+
                         </div>
                     </div>
 

@@ -13,8 +13,8 @@ const IPFS_URL = 'https://rpc.particle.network/ipfs/upload';
     let res = await axios.post(IPFS_URL, form, {
         headers: form.getHeaders(),
         auth: {
-            username: 'dec8124c-eacd-4328-a719-a92477b32d8c',
-            password: 'sFURfNYkyI9FEwITtIuaK1u2aUPvr6C7YTEopih0',
+            username: '6ee9c7d3-0c60-4b07-9fd4-f61b49f2529f',
+            password: 'se4KORHdK8t0vl9iwDoAItqahI7BcKqvRPMiFbgV',
         },
     });
 
